@@ -1,0 +1,19 @@
+{
+  "name": "ibm-appconfiguration-node-sdk",
+  "version": "1.0.0",
+  "description": "IBM Cloud App Configuration Node.js SDK",
+  "main": "./lib/AppConfiguration.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "IBM",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "chalk": "^4.1.0",
+    "events": "^3.2.0",
+    "internet-available": "^1.0.0",
+    "path": "^0.12.7",
+    "websocket": "^1.0.33"
+  }
+}
