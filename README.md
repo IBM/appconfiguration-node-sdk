@@ -62,7 +62,7 @@ client.setCollectionId('collectionId')
 ### Work offline with local feature file
 You can also work offline with local feature file and perform [feature operations](#get-single-feature).
 
-After setting the [collection Id](#initialize-sdk), follow the below steps
+After setting the collection Id, follow the below steps
 ```javascript
 client.fetchFeaturesFromFile(featureFile='path/to/feature/file.json', liveFeatureUpdateEnabled)
 ```
@@ -86,7 +86,7 @@ if(feature) {
     }
     console.log('data', feature);
     console.log(`Feature Name ${feature.getFeatureName()} `);
-    console.log(`Feature ShortName ${feature.getFeatureId()} `);
+    console.log(`Feature Id ${feature.getFeatureId()} `);
     console.log(`Feature Type ${feature.getFeatureDataType()} `);
     console.log(`Feature is enabled ${feature.isEnabled()} `);
 }
@@ -100,7 +100,7 @@ var feature = features["feature_id"];
 
 if(feature) {
     console.log(`Feature Name ${feature.getFeatureName()} `);
-    console.log(`Feature ShortName ${feature.getFeatureId()} `);
+    console.log(`Feature Id ${feature.getFeatureId()} `);
     console.log(`Feature Type ${feature.getFeatureDataType()} `);
     console.log(`Feature is enabled ${feature.isEnabled()} `);
 }
