@@ -20,43 +20,57 @@ const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
 const hostname = '127.0.0.1';
 const port = 3000;
 
-const region = '<REGION>'
-const guid = '<GUID>'
-const apikey = '<APIKEY>'
+// provide the `region`, `guid` & `apikey` as mentioned in the README.md
+const region = "<region>"
+const guid = "<guid>"
+const apikey = "<apikey>"
 
 const client = AppConfiguration.getInstance();
 client.init(region, guid, apikey);
-client.setCollectionId('<COLLECTION_ID>')
+client.setCollectionId("<collectionId>")
 
 const server = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/html');
 
     var url = req.url;
+
+    let identityId = 'user123'
+    let identityAttributes = {
+        'city': 'Bangalore',
+        'radius': 60
+    }
     if (url === '/') {
         res.write('<h1>Welcome to Sample App HomePage!</h1>');
         res.end();
     }
     else if (url === '/getfeature') {
-        let identityId = 'User1'
-        let identityAttributes = {
-            'email': 'ibm.com',
-            'gender': 'male',
-            'age': '31',
-        }
-        let feature = client.getFeature('<FEATURE_ID>');
-
+        let feature = client.getFeature("<featureId>");
         let featureName = feature.getFeatureName();
         let featureDataType = feature.getFeatureDataType();
         let featureValue = feature.getCurrentValue(identityId, identityAttributes);
 
-        res.write(`<h1>Feature Name: ` + featureName + `</h1><br><h1>Feature DataType: ` + featureDataType + `</h1><br><h1>Feature Value:` + featureValue + `</h1>`);
+        res.write(`<h1>Feature Name: ` + featureName + `</h1><br><h1>Feature DataType: ` + featureDataType + `</h1><br><h1>Feature evaluated value:` + featureValue + `</h1>`);
         res.end();
     }
     else if (url === '/getfeatures') {
         let features = client.getFeatures();
 
         res.write(`<p>` + features + `</p>`);
+        res.end();
+    } else if (url === '/getproperty') {
+        let property = client.getProperty("<propertyId>");
+        let propertyName = property.getPropertyName();
+        let propertyDataType = property.getPropertyDataType();
+        let propertyValue = property.getCurrentValue(identityId, identityAttributes);
+
+        res.write(`<h1>Property Name: ` + propertyName + `</h1><br><h1>Property DataType: ` + propertyDataType + `</h1><br><h1>Property evaluated value:` + propertyValue + `</h1>`);
+        res.end();
+
+    } else if (url === '/getproperties') {
+        let properties = client.getProperties();
+
+        res.write(`<p>` + properties + `</p>`);
         res.end();
     }
     else {

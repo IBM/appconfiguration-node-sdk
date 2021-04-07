@@ -1,0 +1,15 @@
+{
+  "name": "example-app",
+  "version": "1.0.0",
+  "description": "Example app to demonstrate the capabilities of IBM Cloud App Configuration service in a node application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "IBM",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "ibm-appconfiguration-node-sdk": "^1.0.1"
+  }
+}
