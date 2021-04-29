@@ -27,7 +27,7 @@ const apikey = "<apikey>"
 
 const client = AppConfiguration.getInstance();
 client.init(region, guid, apikey);
-client.setCollectionId("<collectionId>")
+client.setContext("<collectionId>", "<environmentId>")
 
 const server = http.createServer((req, res) => {
     res.statusCode = 200;
