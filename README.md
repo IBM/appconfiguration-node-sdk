@@ -22,7 +22,7 @@ Instrument your applications with App Configuration Node SDKs, and use the App C
 Installation is done using the `npm install` command.
 
 ```bash
-$ npm install ibm-appconfiguration-node-sdk
+$ npm install ibm-appconfiguration-node-sdk@latest
 ```
 
 ## Import the SDK
@@ -41,23 +41,23 @@ Initialize the sdk to connect with your App Configuration service instance.
 const client = AppConfiguration.getInstance();
 
 let region = AppConfiguration.REGION_US_SOUTH;;
-let guid = 'abc-def-xyz';
-let apikey = 'j9qc-abc-z79';
-
+let guid = '<guid>';
+let apikey = '<apikey>';
 client.init(region, guid, apikey)
 
-// Set the collection Id
-client.setCollectionId('collectionId')
+let collectionId = '<collectionId>';
+let environmentId = '<environmentId>';
+client.setContext(collectionId, environmentId)
 ```
 
 - region : Region name where the App Configuration service instance is created. Use
   - `AppConfiguration.REGION_US_SOUTH` for Dallas
   - `AppConfiguration.REGION_EU_GB` for London
   - `AppConfiguration.REGION_AU_SYD` for Sydney
-- guid : Instance Id of the App Configuration service. Get it from the service credentials section of the dashboard.
-- apikey : ApiKey of the App Configuration service. Get it from the service credentials section of the dashboard.
-
-* collectionId: Id of the collection created in App Configuration service instance.
+- guid : Instance Id of the App Configuration service. Obtain it from the service credentials section of the App Configuration dashboard.
+- apikey : ApiKey of the App Configuration service. Obtain it from the service credentials section of the App Configuration dashboard.
+* collectionId: Id of the collection created in App Configuration service instance under the **Collections** section.
+* environmentId: Id of the environment created in App Configuration service instance under the **Environments** section.
 > Here, by default live update from the server is enabled. To turn off this mode see the [below section](#work-offline-with-local-configuration-file)
 
 
@@ -65,15 +65,14 @@ client.setCollectionId('collectionId')
 ### Work offline with local configuration file
 You can also work offline with local configuration file and perform feature and property related operations.
 
-After setting the [collection Id](#initialize-sdk), follow the below steps
+After [`client.init(region, guid, apikey)`](#initialize-sdk), follow the below steps
 ```javascript
-client.fetchConfigurationFromFile(configurationFile='path/to/configuration/file.json', liveConfigUpdateEnabled)
+let configurationFile = 'path/to/configuration/file.json';
+let liveConfigUpdateEnabled = false;
+client.setContext(collectionId, environmentId, configurationFile, liveConfigUpdateEnabled)
 ```
 - configurationFile: Path to the JSON file, which contains configuration details.
 - liveConfigUpdateEnabled: Set this value to `false` if the new configuration values shouldn't be fetched from the server. Make sure to provide a proper JSON file in the path. By default, liveConfigUpdateEnabled value is enabled.
-
-
-
 
 ## Get single feature
 
@@ -197,8 +196,8 @@ client.setDebug(true)
 ```
 
 ## Examples
-Try [this](examples) sample application in the examples folder to learn more about feature and property evaluation.
+Try [this](https://github.com/IBM/appconfiguration-node-sdk/tree/master/examples) sample application in the examples folder to learn more about feature and property evaluation.
 
 ## License
 
-This project is released under the Apache 2.0 license. The license's full text can be found in [LICENSE](/LICENSE)
+This project is released under the Apache 2.0 license. The license's full text can be found in [LICENSE](https://github.com/IBM/appconfiguration-node-sdk/blob/master/LICENSE)

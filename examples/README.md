@@ -68,7 +68,8 @@
     Choose Override enabled value, and give the value(say "Bangalore") in the textarea.
     Click Save rule & Add the targeting.
     ```
-- In the sample app, provide the collectionId, featureId & propertyId in file [`app.js`](app.js#L30)
+- Use the `id` of default environment created on instance creation.
+- In the sample app, provide the collectionId, environment, featureId & propertyId in file [`app.js`](app.js#L30)
 
 ## Step 4: Run the app
 ```bash
