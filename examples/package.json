@@ -10,6 +10,6 @@
   "author": "IBM",
   "license": "Apache-2.0",
   "dependencies": {
-    "ibm-appconfiguration-node-sdk": "^1.0.1"
+    "ibm-appconfiguration-node-sdk": "^0.0.1"
   }
 }
