@@ -21,39 +21,37 @@ const hostname = '127.0.0.1';
 const port = 3000;
 
 // provide the `region`, `guid` & `apikey` as mentioned in the README.md
-const region = "<region>"
-const guid = "<guid>"
-const apikey = "<apikey>"
+const region = "<region>";
+const guid = "<guid>";
+const apikey = "<apikey>";
 
 const client = AppConfiguration.getInstance();
 client.init(region, guid, apikey);
-client.setContext("<collectionId>", "<environmentId>")
+client.setContext("<collectionId>", "<environmentId>");
 
 const server = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/html');
 
-    var url = req.url;
+    const { url } = req;
 
-    let identityId = 'user123'
-    let identityAttributes = {
-        'city': 'Bangalore',
-        'radius': 60
-    }
+    const entityId = 'user123';
+    const entityAttributes = {
+        city: 'Bangalore',
+        radius: 60,
+    };
     if (url === '/') {
         res.write('<h1>Welcome to Sample App HomePage!</h1>');
         res.end();
-    }
-    else if (url === '/getfeature') {
+    } else if (url === '/getfeature') {
         let feature = client.getFeature("<featureId>");
         let featureName = feature.getFeatureName();
         let featureDataType = feature.getFeatureDataType();
-        let featureValue = feature.getCurrentValue(identityId, identityAttributes);
+        let featureValue = feature.getCurrentValue(entityId, entityAttributes);
 
         res.write(`<h1>Feature Name: ` + featureName + `</h1><br><h1>Feature DataType: ` + featureDataType + `</h1><br><h1>Feature evaluated value:` + featureValue + `</h1>`);
         res.end();
-    }
-    else if (url === '/getfeatures') {
+    } else if (url === '/getfeatures') {
         let features = client.getFeatures();
 
         res.write(`<p>` + features + `</p>`);
@@ -62,18 +60,16 @@ const server = http.createServer((req, res) => {
         let property = client.getProperty("<propertyId>");
         let propertyName = property.getPropertyName();
         let propertyDataType = property.getPropertyDataType();
-        let propertyValue = property.getCurrentValue(identityId, identityAttributes);
+        let propertyValue = property.getCurrentValue(entityId, entityAttributes);
 
         res.write(`<h1>Property Name: ` + propertyName + `</h1><br><h1>Property DataType: ` + propertyDataType + `</h1><br><h1>Property evaluated value:` + propertyValue + `</h1>`);
         res.end();
-
     } else if (url === '/getproperties') {
         let properties = client.getProperties();
 
         res.write(`<p>` + properties + `</p>`);
         res.end();
-    }
-    else {
+    } else {
         res.write('<h1>404 NOT FOUND</h1>');
         res.end();
     }

@@ -1,10 +1,10 @@
-# Sample Application
+# Example Application
 
-> **DISCLAIMER**: This is a guideline sample application and is used for demonstrative and illustrative purposes only. This is not a production ready code.
+> **DISCLAIMER**: This is a guideline example application and is used for demonstrative and illustrative purposes only. This is not a production ready code.
 
 ## Step 1: Create an instance of App Configuration service
 - Log in to your IBM Cloud account.
-- In the [IBM Cloud catalog](https://cloud.ibm.com/catalog#services), search **App Configuration** and select [App Configuration](https://cloud.ibm.com/catalog/services/apprapp). The service configuration screen opens.
+- In the [IBM Cloud catalog](https://cloud.ibm.com/catalog#services), search **App Configuration** and select [App Configuration](https://cloud.ibm.com/catalog/services/app-configuration). The service configuration screen opens.
 - **Select a region** - Currently, Dallas (us-south), London (eu-gb) and Sydney (au-syd) region is supported.
 - Select a pricing plan, resource group and configure your resource with a service name, or use the preset name.
 - Click **Create**. A new service instance is created and the App Configuration console displayed.
@@ -69,7 +69,7 @@
     Click Save rule & Add the targeting.
     ```
 - Use the `id` of default environment created on instance creation.
-- In the sample app, provide the collectionId, environment, featureId & propertyId in file [`app.js`](app.js#L30)
+- In the example app, provide the collectionId, environment, featureId & propertyId in file [`app.js`](app.js#L30)
 
 ## Step 4: Run the app
 ```bash
