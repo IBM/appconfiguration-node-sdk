@@ -14,28 +14,11 @@
  * limitations under the License.
  */
 
-/**
- * Module to check the internet connectivity.
- * @module Connectivity
- */
-const internetAvailable = require('internet-available');
+const { socketClient } = require('../../../../lib/configurations/internal/Socket');
 
-/**
- * It returns a promise that is fulfilled if there's internet, otherwise if there's no internet
- * it will be rejected
- * 
- * @method module:Connectivity#checkInternet
- * @returns {Promise<any>}
- */
-module.exports.checkInternet = function isConnected() {
-  return new Promise((resolve) => {
-    internetAvailable({
-      timeout: 500,
-      retries: 2,
-    }).then(() => {
-      resolve(true);
-    }).catch(() => {
-      resolve(false);
-    });
+describe('websocket connect', () => {
+  jest.setTimeout(30000);
+  test('socket connect events', () => {
+    expect(socketClient.eventNames().length).toEqual(2);
   });
-};
+});
