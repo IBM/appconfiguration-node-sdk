@@ -1,0 +1,142 @@
+{
+  "features": [
+    {
+      "name": "defaultFeature",
+      "feature_id": "defaultfeature",
+      "type": "STRING",
+      "enabled_value": "Hello",
+      "disabled_value": "Bye",
+      "segment_rules": [
+        {
+          "rules": [
+            {
+              "segments": ["kg92d3wa"]
+            }
+          ],
+          "value": "Welcome",
+          "order": 1
+        }
+      ],
+      "segment_exists": true,
+      "enabled": true
+    },
+    {
+      "name": "emailFeature",
+      "feature_id": "emailfeature",
+      "type": "STRING",
+      "enabled_value": "Org user",
+      "disabled_value": "unknown user",
+      "segment_rules": [
+        {
+          "rules": [
+            {
+              "segments": ["kfw38i6s"]
+            }
+          ],
+          "value": "Test user",
+          "order": 1
+        }
+      ],
+      "segment_exists": true,
+      "enabled": true
+    },
+    {
+      "name": "reqbody",
+      "feature_id": "reqbody",
+      "type": "NUMERIC",
+      "enabled_value": 5,
+      "disabled_value": 0,
+      "segment_rules": [
+        {
+          "rules": [
+            {
+              "segments": ["kdu78d93"]
+            }
+          ],
+          "value": "19",
+          "order": 1
+        }
+      ],
+      "segment_exists": true,
+      "enabled": true
+    }
+  ],
+  "collection": {
+    "name": "appCrash",
+    "collection_id": "appcrash",
+    "features_count": 0,
+    "properties_count": 0
+  },
+  "properties": [
+    {
+      "name": "numericProperty",
+      "property_id": "numericproperty",
+      "tags": "test",
+      "type": "NUMERIC",
+      "value": 25,
+      "segment_rules": [
+        {
+          "rules": [
+            {
+              "segments": ["keuyclvf"]
+            }
+          ],
+          "value": 81,
+          "order": 1
+        }
+      ],
+      "segment_exists": true
+    }
+  ],
+  "segments": [
+    {
+      "name": "reqbody",
+      "segment_id": "keuyclvf",
+      "rules": [
+        {
+          "values": ["tester.com"],
+          "operator": "endsWith",
+          "attribute_name": "email"
+        }
+      ]
+    },
+    {
+      "name": "defaultSeg",
+      "segment_id": "kg92d3wa",
+      "rules": [
+        {
+          "values": ["dev"],
+          "operator": "contains",
+          "attribute_name": "email"
+        }
+      ]
+    },
+    {
+      "name": "error",
+      "segment_id": "kfw38i6s",
+      "rules": [
+        {
+          "values": ["@tester.com"],
+          "operator": "contains",
+          "attribute_name": "email"
+        }
+      ]
+    },
+    {
+      "name": "RegionalUser",
+      "segment_id": "kdu77n4s",
+      "rules": [
+        {
+          "values": ["100"],
+          "operator": "lesserThanEquals ",
+          "attribute_name": "radius"
+        },
+        {
+          "values": ["50"],
+          "operator": "lesserThan",
+          "attribute_name": "cityRadius"
+        }
+      ]
+    }
+  ]
+}

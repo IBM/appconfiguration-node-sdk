@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-/**
- * Module to check the internet connectivity.
- * @module Connectivity
- */
-const internetAvailable = require('internet-available');
+const { SegmentRules } = require('../../../../lib/configurations/models/SegmentRules');
 
-/**
- * It returns a promise that is fulfilled if there's internet, otherwise if there's no internet
- * it will be rejected
- * 
- * @method module:Connectivity#checkInternet
- * @returns {Promise<any>}
- */
-module.exports.checkInternet = function isConnected() {
-  return new Promise((resolve) => {
-    internetAvailable({
-      timeout: 500,
-      retries: 2,
-    }).then(() => {
-      resolve(true);
-    }).catch(() => {
-      resolve(false);
-    });
+let segmentRulesObj;
+
+function setupRules() {
+  const segmentRules = {
+    rules: [
+      {
+        segments: [
+          'kp3yb6t1',
+        ],
+      },
+    ],
+    value: 25,
+    order: 1,
+  };
+
+  segmentRulesObj = new SegmentRules(segmentRules);
+}
+
+describe('segment rules', () => {
+  setupRules();
+  test('test segment rules', () => {
+    expect(segmentRulesObj.getRules().length).toEqual(1);
+    expect(segmentRulesObj.getValue()).toEqual(25);
+    expect(segmentRulesObj.getOrder()).toEqual(1);
   });
-};
+});

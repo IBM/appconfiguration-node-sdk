@@ -1,10 +1,13 @@
 {
   "name": "ibm-appconfiguration-node-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "IBM Cloud App Configuration Node.js SDK",
   "main": "./lib/AppConfiguration.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint:fix": "eslint . --fix",
+    "eslint:check": "eslint . --cache",
+    "test-unit": "jest --silent test/unit/",
+    "test-integration": "jest test/integration/"
   },
   "author": "IBM",
   "license": "Apache-2.0",
@@ -13,11 +16,31 @@
     "url": "https://github.com/IBM/appconfiguration-node-sdk"
   },
   "dependencies": {
-    "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "events": "^3.2.0",
+    "ibm-cloud-sdk-core": "^2.11.2",
     "internet-available": "^1.0.0",
     "path": "^0.12.7",
     "websocket": "^1.0.33"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "eslint": "^7.27.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.3",
+    "jest": "^27.0.4",
+    "jsdoc": "^3.6.7"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageDirectory": "./coverage/",
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/test/",
+      "<rootDir>/examples/"
+    ],
+    "testEnvironment": "node",
+    "verbose": false,
+    "silent": false
   }
 }
