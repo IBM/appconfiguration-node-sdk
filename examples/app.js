@@ -14,67 +14,88 @@
  * limitations under the License.
  */
 
+require('dotenv').config();
 const http = require('http');
 const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
 
 const hostname = '127.0.0.1';
 const port = 3000;
 
-// provide the `region`, `guid` & `apikey` as mentioned in the README.md
-const region = "<region>";
-const guid = "<guid>";
-const apikey = "<apikey>";
+const region = process.env.REGION;
+const guid = process.env.GUID;
+const apikey = process.env.APIKEY;
 
 const client = AppConfiguration.getInstance();
 client.init(region, guid, apikey);
-client.setContext("<collectionId>", "<environmentId>");
+
+const collectionId = process.env.COLLECTION_ID;
+const environmentId = process.env.ENVIRONMENT_ID;
+client.setContext(collectionId, environmentId);
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html');
 
-    const { url } = req;
+  const { url } = req;
 
-    const entityId = 'user123';
-    const entityAttributes = {
-        city: 'Bangalore',
-        radius: 60,
-    };
-    if (url === '/') {
-        res.write('<h1>Welcome to Sample App HomePage!</h1>');
-        res.end();
-    } else if (url === '/getfeature') {
-        const feature = client.getFeature("<featureId>");
-        const featureName = feature.getFeatureName();
-        const featureDataType = feature.getFeatureDataType();
-        const featureValue = feature.getCurrentValue(entityId, entityAttributes);
+  const entityId = 'user123';
+  const entityAttributes = {
+    city: 'Bangalore',
+    radius: 60,
+  };
+  if (url === '/') {
+    res.write('<h1>Welcome to Sample App HomePage!</h1>');
+    res.end();
+  } else if (url === '/getfeature') {
+    const feature = client.getFeature(process.env.FEATURE_ID);
+    const featureName = feature.getFeatureName();
+    const featureDataType = feature.getFeatureDataType();
+    const featureValue = feature.getCurrentValue(entityId, entityAttributes);
 
-        res.write(`<h1>Feature Name: ${  featureName  }</h1><br><h1>Feature DataType: ${  featureDataType  }</h1><br><h1>Feature evaluated value:${  featureValue  }</h1>`);
-        res.end();
-    } else if (url === '/getfeatures') {
-        const features = client.getFeatures();
+    const html = `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Feature evaluated value:${featureValue}</h1>`;
+    res.write(html);
+    res.end();
+  } else if (url === '/getfeatures') {
+    const features = client.getFeatures();
 
-    res.write(`<p>${features}</p>`);
+    res.write('<h1>All features</h1>');
+    let html = '';
+    Object.keys(features).forEach((feature) => {
+      const featureName = features[feature].getFeatureName();
+      const featureDataType = features[feature].getFeatureDataType();
+      const isFeatureEnabled = features[feature].isEnabled();
+      html += `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Is feature enabled: ${isFeatureEnabled}</h1><br>`;
+    });
+    res.write(html);
     res.end();
   } else if (url === '/getproperty') {
-    const property = client.getProperty('<propertyId>');
+    const property = client.getProperty(process.env.PROPERTY_ID);
     const propertyName = property.getPropertyName();
     const propertyDataType = property.getPropertyDataType();
     const propertyValue = property.getCurrentValue(entityId, entityAttributes);
 
-        res.write(`<h1>Property Name: ${  propertyName  }</h1><br><h1>Property DataType: ${  propertyDataType  }</h1><br><h1>Property evaluated value:${  propertyValue  }</h1>`);
-        res.end();
-    } else if (url === '/getproperties') {
-        const properties = client.getProperties();
+    const html = `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${propertyValue}</h1>`;
+    res.write(html);
+    res.end();
+  } else if (url === '/getproperties') {
+    const properties = client.getProperties();
 
-        res.write(`<p>${  properties  }</p>`);
-        res.end();
-    } else {
-        res.write('<h1>404 NOT FOUND</h1>');
-        res.end();
-    }
+    res.write('<h1>All properties</h1>');
+    let html = '';
+    Object.keys(properties).forEach((property) => {
+      const propertyName = properties[property].getPropertyName();
+      const propertyDataType = properties[property].getPropertyDataType();
+      const propertyValue = properties[property].getCurrentValue(entityId);
+      html += `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${propertyValue}</h1><br>`;
+    });
+    res.write(html);
+    res.end();
+  } else {
+    res.write('<h1>404 NOT FOUND</h1>');
+    res.end();
+  }
 });
 
 server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+  console.log(`Server running at http://${hostname}:${port}/`);
 });

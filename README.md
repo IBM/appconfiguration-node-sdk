@@ -45,11 +45,15 @@ const {
 Initialize the sdk to connect with your App Configuration service instance.
 
 ```JS
-const client = AppConfiguration.getInstance();
-client.init("region", "guid", "apikey");
+const region = AppConfiguration.REGION_US_SOUTH;
+const guid = '<guid>';
+const apikey = '<apikey>';
 
-const collectionId = "airlines-webapp";
-const environmentId = "dev";
+const client = AppConfiguration.getInstance();
+client.init(region, guid, apikey);
+
+const collectionId = 'airlines-webapp';
+const environmentId = 'dev';
 client.setContext(collectionId, environmentId);
 ```
 
@@ -71,12 +75,12 @@ client.setContext(collectionId, environmentId);
 
 You can also work offline with local configuration file and perform feature and property related operations.
 
-After [`client.init("region", "guid", "apikey")`](#initialize-sdk), follow the below steps
+After [`client.init(region, guid, apikey)`](#initialize-sdk), follow the below steps
 
 ```javascript
-const configurationFile = "saflights/flights.json";
+const configurationFile = 'saflights/flights.json';
 const liveConfigUpdateEnabled = false;
-client.setContext("airlines-webapp", "dev", configurationFile, liveConfigUpdateEnabled);
+client.setContext(collectionId, environmentId, configurationFile, liveConfigUpdateEnabled);
 ```
 
 - configurationFile: Path to the JSON file, which contains configuration details.
@@ -92,10 +96,9 @@ appconfiguration-node-sdk installation folder.
 ## Get single feature
 
 ```javascript
-const feature = client.getFeature("online-check-in");    //feature can be null incase of an invalid feature id
+const feature = client.getFeature('online-check-in'); //feature can be null incase of an invalid feature id
 
 if (feature) {
-
   console.log(`Feature Name ${feature.getFeatureName()} `);
   console.log(`Feature Id ${feature.getFeatureId()} `);
   console.log(`Feature Type ${feature.getFeatureDataType()} `);
@@ -112,7 +115,7 @@ if (feature) {
 ```javascript
 const features = client.getFeatures();
 
-const feature = features["online-check-in"];
+const feature = features['online-check-in'];
 
 if (feature) {
   console.log(`Feature Name ${feature.getFeatureName()} `);
@@ -133,11 +136,11 @@ unique entityId as the parameter to perform the feature flag evaluation.
   as `entityAttributes` parameter to this method.
 
     ```javascript
-    const entityId = "john_doe";
+    const entityId = 'john_doe';
     const entityAttributes = {
-        'city': 'Bangalore',
-        'country': 'India'
-    }
+      city: 'Bangalore',
+      country: 'India',
+    };
 
     const featureValue = feature.getCurrentValue(entityId, entityAttributes);
     ```
@@ -146,14 +149,14 @@ unique entityId as the parameter to perform the feature flag evaluation.
   value**.
 
     ```javascript
-    const entityId = "john_doe";
+    const entityId = 'john_doe';
     const featureValue = feature.getCurrentValue(entityId);
     ```
 
 ## Get single property
 
 ```javascript
-const property = client.getProperty("check-in-charges");    //property can be null incase of an invalid property id
+const property = client.getProperty('check-in-charges'); //property can be null incase of an invalid property id
 
 if (property) {
   console.log(`Property Name ${property.getPropertyName()} `);
@@ -167,7 +170,7 @@ if (property) {
 ```javascript
 const properties = client.getProperties();
 
-const property = properties["check-in-charges"];
+const property = properties['check-in-charges'];
 
 if (property) {
   console.log(`Property Name ${property.getPropertyName()} `);
@@ -187,18 +190,18 @@ unique entityId as the parameter to perform the property evaluation.
   as `entityAttributes` parameter to this method.
 
     ```javascript
-    const entityId = "john_doe";
+    const entityId = 'john_doe';
     const entityAttributes = {
-        'city': 'Bangalore',
-        'country': 'India'
-    }
+      city: 'Bangalore',
+      country: 'India',
+    };
 
     const propertyValue = property.getCurrentValue(entityId, entityAttributes);
     ```
 - If the property is not targeted to any segments this method returns the property value.
 
     ```javascript
-    const entityId = "john_doe";
+    const entityId = 'john_doe';
     const propertyValue = property.getCurrentValue(entityId);
     ```
 
@@ -208,9 +211,9 @@ To listen to the configurations changes in your App Configuration service instan
 event listener as mentioned below
 
 ```javascript
-  client.emitter.on('configurationUpdate', () => {
-      // add your code
-  })
+client.emitter.on('configurationUpdate', () => {
+  // add your code
+});
 ```
 
 ## Enable debugger (optional)
@@ -218,7 +221,7 @@ event listener as mentioned below
 Use this method to enable/disable the logging in SDK.
 
 ```javascript
-client.setDebug(true)
+client.setDebug(true);
 ```
 
 ## Examples
