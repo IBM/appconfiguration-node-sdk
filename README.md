@@ -69,29 +69,32 @@ client.setContext(collectionId, environmentId);
 * collectionId: Id of the collection created in App Configuration service instance under the **Collections** section.
 * environmentId: Id of the environment created in App Configuration service instance under the **Environments** section.
 
-> Here, by default live update from the server is enabled. To turn off this mode see the [below section](#work-offline-with-local-configuration-file)
-
-### Work offline with local configuration file
-
-You can also work offline with local configuration file and perform feature and property related operations.
-
-After [`client.init(region, guid, apikey)`](#initialize-sdk), follow the below steps
-
+### (Optional) 
+In order for your application and SDK to continue its operations even during the unlikely scenario of App Configuration service across your application restarts, you can configure the SDK to work using a persistent cache. The SDK uses the persistent cache to store the App Configuration data that will be available across your application restarts.
 ```javascript
-const configurationFile = 'saflights/flights.json';
-const liveConfigUpdateEnabled = false;
-client.setContext(collectionId, environmentId, configurationFile, liveConfigUpdateEnabled);
+// 1. default (without persistent cache)
+client.setContext(collectionId, environmentId)
+
+// 2. with persistent cache
+client.setContext(collectionId, environmentId, {
+  persistentCacheDirectory: '/var/lib/docker/volumes/'
+})
+```
+* persistentCacheDirectory: Absolute path to a directory which has read & write permission for the user. The SDK will create a file - `AppConfiguration.json` in the specified directory, and it will be used as the persistent cache to store the App Configuration service information.
+
+When persistent cache is enabled, the SDK will keep the last known good configuration at the persistent cache. In the case of App Configuration server being unreachable, the latest configurations at the persistent cache is loaded to the application to continue working.
+
+### (Optional)
+The SDK is also designed to serve configurations, perform feature flag & property evaluations without being connected to App Configuration service.
+```javascript
+client.setContext(collectionId, environmentId, {
+  bootstrapFile: 'saflights/flights.json',
+  liveConfigUpdateEnabled: false
+})
 ```
 
-- configurationFile: Path to the JSON file, which contains configuration details.
-- liveConfigUpdateEnabled: Set this value to `false` if the new configuration values shouldn't be fetched from the
-  server. Make sure to provide a proper JSON file in the path. By default, liveConfigUpdateEnabled value is enabled.
-
-### Permissions required by SDK
-
-Add write permission for `non root` users to `appconfiguration.json` file which is used as cache in AppConfiguration
-SDK. AppConfiguration cache location will be `./lib/configurations/internal/appconfiguration.json` within the
-appconfiguration-node-sdk installation folder.
+* bootstrapFile: Absolute path of the JSON file, which contains configuration details. Make sure to provide a proper JSON file. You can generate this file using `ibmcloud ac config` command of the IBM Cloud App Configuration CLI.
+* liveConfigUpdateEnabled: Live configuration update from the server. Set this value to `false` if the new configuration values shouldn't be fetched from the server.
 
 ## Get single feature
 
@@ -204,6 +207,58 @@ unique entityId as the parameter to perform the property evaluation.
     const entityId = 'john_doe';
     const propertyValue = property.getCurrentValue(entityId);
     ```
+
+## Supported Data types
+
+App Configuration service allows to configure the feature flag and properties in the following data types : Boolean,
+Numeric, String. The String data type can be of the format of a text string , JSON or YAML. The SDK processes each
+format accordingly as shown in the below table.
+
+<details><summary>View Table</summary>
+
+| **Feature or Property value**                                                                          | **DataType** | **DataFormat** | **Type of data returned <br> by `getCurrentValue()`** | **Example output**                                                   |
+| ------------------------------------------------------------------------------------------------------ | ------------ | -------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
+| `true`                                                                                                 | BOOLEAN      | not applicable | `boolean`                                                | `true`                                                               |
+| `25`                                                                                                   | NUMERIC      | not applicable | `number`                                             | `25`                                                                 |
+| "a string text"                                                                                        | STRING       | TEXT           | `string`                                              | `a string text`                                                      |
+| <pre>{<br>  "firefox": {<br>    "name": "Firefox",<br>    "pref_url": "about:config"<br>  }<br>}</pre> | STRING       | JSON           | `JSON object`                              | `{"firefox":{"name":"Firefox","pref_url":"about:config"}}` |
+| <pre>men:<br>  - John Smith<br>  - Bill Jones<br>women:<br>  - Mary Smith<br>  - Susan Williams</pre>  | STRING       | YAML           | `string`                              | `"men:\n  - John Smith\n  - Bill Jones\nwomen:\n  - Mary Smith\n  - Susan Williams"` |
+</details>
+
+<details><summary>Feature flag</summary>
+
+  ```javascript
+  const feature = client.getFeature('json-feature');
+  feature.getFeatureDataType(); // STRING
+  feature.getFeatureDataFormat(); // JSON
+
+  // Example (traversing the returned JSON)
+  let result = feature.getCurrentValue(entityId, entityAttributes);
+  console.log(result.key) // prints the value of the key
+
+  const feature = client.getFeature('yaml-feature');
+  feature.getFeatureDataType(); // STRING
+  feature.getFeatureDataFormat(); // YAML
+  feature.getCurrentValue(entityId, entityAttributes); // returns the stringified yaml (check above table)
+  ```
+</details>
+<details><summary>Property</summary>
+
+  ```javascript
+  const property = client.getProperty('json-property');
+  property.getPropertyDataType(); // STRING
+  property.getPropertyDataFormat(); // JSON
+
+  // Example (traversing the returned JSON)
+  let result = property.getCurrentValue(entityId, entityAttributes);
+  console.log(result.key) // prints the value of the key
+
+  const property = client.getProperty('yaml-property');
+  property.getPropertyDataType(); // STRING
+  property.getPropertyDataFormat(); // YAML
+  property.getCurrentValue(entityId, entityAttributes); // returns the stringified yaml (check above table)
+  ```
+</details>
 
 ## Set listener for feature and property data changes
 

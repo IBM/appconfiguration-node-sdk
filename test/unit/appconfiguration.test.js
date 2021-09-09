@@ -88,7 +88,16 @@ describe('setContext method', () => {
     client = null;
   });
 
-  test('offile mode & empty string to local config file path', async () => {
+  test('test when illegal number of arguments are provided to setContext method', () => {
+    client = initializeAppConfiguration();
+    client.init('region_value', 'guid_value', 'apikey_value');
+    expect(client.setContext('collection_id', 'environment_id', null, null, {
+      persistentCacheDirectory: __dirname,
+    })).toBeUndefined();
+    client = null;
+  });
+
+  test('test offline mode by passing an empty string as config file path', async () => {
     client = initializeAppConfiguration();
     client.init('region_value', 'guid_value', 'apikey_value');
     expect(client.setContext('collection_id', 'environment_id', null, false)).toBeUndefined();
@@ -96,7 +105,17 @@ describe('setContext method', () => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
   });
 
-  test('all values passed correctly', async () => {
+  test('test when persistent cache is enabled', async () => {
+    client = initializeAppConfiguration();
+    client.init('region_value', 'guid_value', 'apikey_value');
+    client.setContext('collection_id', 'environment_id', {
+      persistentCacheDirectory: __dirname,
+    })
+    client = null;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  });
+
+  test('test in-memory cache only', async () => {
     client = initializeAppConfiguration();
     client.setDebug(true);
     client.init('region_value', 'guid_value', 'apikey_value');
