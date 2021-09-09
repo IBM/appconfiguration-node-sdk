@@ -18,11 +18,12 @@ const { Property } = require('../../../../lib/configurations/models/Property');
 
 let propertyObj;
 
-function setupProperty(propertyType, value) {
+function setupProperty(propertyType, value, format) {
   const property = {
     name: 'defaultProperty',
     property_id: 'defaultproperty',
     type: propertyType,
+    format: format,
     value,
     segment_rules: [],
   };
@@ -36,14 +37,34 @@ describe('property details', () => {
     expect(propertyObj.getPropertyName()).toBe('defaultProperty');
     expect(propertyObj.getPropertyId()).toBe('defaultproperty');
     expect(propertyObj.getPropertyDataType()).toBe('BOOLEAN');
+    expect(propertyObj.getPropertyDataFormat()).toBeNull();
     expect(propertyObj.getCurrentValue()).toBeNull();
   });
 
-  test('test string property', () => {
-    setupProperty('STRING', 'org user');
+  test('test string property - text', () => {
+    setupProperty('STRING', 'org user', 'TEXT');
     expect(propertyObj.getPropertyName()).toBe('defaultProperty');
     expect(propertyObj.getPropertyId()).toBe('defaultproperty');
     expect(propertyObj.getPropertyDataType()).toBe('STRING');
+    expect(propertyObj.getPropertyDataFormat()).toBe('TEXT');
+    expect(propertyObj.getCurrentValue()).toBeNull();
+  });
+
+  test('test string property - valid json', () => {
+    setupProperty('STRING', { "key": "property value" }, 'JSON');
+    expect(propertyObj.getPropertyName()).toBe('defaultProperty');
+    expect(propertyObj.getPropertyId()).toBe('defaultproperty');
+    expect(propertyObj.getPropertyDataType()).toBe('STRING');
+    expect(propertyObj.getPropertyDataFormat()).toBe('JSON');
+    expect(propertyObj.getCurrentValue()).toBeNull();
+  });
+
+  test('test string property - valid yaml', () => {
+    setupProperty('STRING', 'key1: property_value\n---\nkey2: property_value', 'YAML');
+    expect(propertyObj.getPropertyName()).toBe('defaultProperty');
+    expect(propertyObj.getPropertyId()).toBe('defaultproperty');
+    expect(propertyObj.getPropertyDataType()).toBe('STRING');
+    expect(propertyObj.getPropertyDataFormat()).toBe('YAML');
     expect(propertyObj.getCurrentValue()).toBeNull();
   });
 
@@ -52,6 +73,7 @@ describe('property details', () => {
     expect(propertyObj.getPropertyName()).toBe('defaultProperty');
     expect(propertyObj.getPropertyId()).toBe('defaultproperty');
     expect(propertyObj.getPropertyDataType()).toBe('NUMERIC');
+    expect(propertyObj.getPropertyDataFormat()).toBeNull();
     expect(propertyObj.getCurrentValue()).toBeNull();
   });
 });

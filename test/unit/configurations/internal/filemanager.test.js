@@ -84,7 +84,7 @@ describe('file manager', () => {
   });
   test('read config file', () => {
     const filePath = path.join(__dirname, 'nonexistingfile.json');
-    expect(FileManager.getFileData(filePath)).toStrictEqual([]);
+    expect(FileManager.getFileData(filePath)).toStrictEqual({});
   });
   test('write & read config file', () => {
     jest.setTimeout(30000);

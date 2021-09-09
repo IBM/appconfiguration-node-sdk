@@ -22,8 +22,12 @@ let configurationHandlerInstance;
 async function setup() {
   configurationHandlerInstance = configurationHandler.getInstance();
   configurationHandlerInstance.init('region', 'guid', 'apikey');
-  const filePath = path.join(__dirname, 'appconfiguration.json');
-  configurationHandlerInstance.setContext('collectionId', 'environmentId', filePath, false);
+  const filePath = path.join(__dirname, 'bootstrap-configurations.json');
+  configurationHandlerInstance.setContext('collectionId', 'environmentId', {
+    persistentCacheDirectory: __dirname,
+    bootstrapFile: filePath,
+    liveConfigUpdateEnabled: false,
+  });
   await new Promise((resolve) => setTimeout(resolve, 4000));
 }
 

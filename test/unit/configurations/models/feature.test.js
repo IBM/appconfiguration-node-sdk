@@ -18,18 +18,19 @@ const { Feature } = require('../../../../lib/configurations/models/Feature');
 
 let featureObj;
 
-function setupFeature(featureType, enabledValue, disabledValue, enabled) {
+function setupFeature(featureType, enabledValue, disabledValue, enabled, format) {
   const feature = {
     name: 'defaultFeature',
     feature_id: 'defaultfeature',
     type: featureType,
+    format: format,
     enabled_value: enabledValue,
     disabled_value: disabledValue,
     segment_rules: [],
     enabled,
   };
 
-  featureObj = new Feature(feature, feature.enabled);
+  featureObj = new Feature(feature);
 }
 
 describe('feature details', () => {
@@ -38,15 +39,37 @@ describe('feature details', () => {
     expect(featureObj.getFeatureName()).toBe('defaultFeature');
     expect(featureObj.getFeatureId()).toBe('defaultfeature');
     expect(featureObj.getFeatureDataType()).toBe('BOOLEAN');
+    expect(featureObj.getFeatureDataFormat()).toBeNull();
     expect(featureObj.isEnabled()).toBe(false);
     expect(featureObj.getCurrentValue()).toBeNull();
   });
 
-  test('test string feature', () => {
-    setupFeature('STRING', 'org user', 'unknown user', true);
+  test('test string feature - text', () => {
+    setupFeature('STRING', 'org user', 'unknown user', true, 'TEXT');
     expect(featureObj.getFeatureName()).toBe('defaultFeature');
     expect(featureObj.getFeatureId()).toBe('defaultfeature');
     expect(featureObj.getFeatureDataType()).toBe('STRING');
+    expect(featureObj.getFeatureDataFormat()).toBe('TEXT');
+    expect(featureObj.isEnabled()).toBe(true);
+    expect(featureObj.getCurrentValue()).toBeNull();
+  });
+
+  test('test string feature - valid json', () => {
+    setupFeature('STRING', {"key": "enabled value"}, {"key" : "disabled value"}, true, 'JSON');
+    expect(featureObj.getFeatureName()).toBe('defaultFeature');
+    expect(featureObj.getFeatureId()).toBe('defaultfeature');
+    expect(featureObj.getFeatureDataType()).toBe('STRING');
+    expect(featureObj.getFeatureDataFormat()).toBe('JSON');
+    expect(featureObj.isEnabled()).toBe(true);
+    expect(featureObj.getCurrentValue()).toBeNull();
+  });
+
+  test('test string feature - valid yaml', () => {
+    setupFeature('STRING', 'key1: enabled_value', 'key2: disabled_value\n---\nkey3: disabled_value', true, "YAML");
+    expect(featureObj.getFeatureName()).toBe('defaultFeature');
+    expect(featureObj.getFeatureId()).toBe('defaultfeature');
+    expect(featureObj.getFeatureDataType()).toBe('STRING');
+    expect(featureObj.getFeatureDataFormat()).toBe('YAML');
     expect(featureObj.isEnabled()).toBe(true);
     expect(featureObj.getCurrentValue()).toBeNull();
   });
@@ -56,6 +79,7 @@ describe('feature details', () => {
     expect(featureObj.getFeatureName()).toBe('defaultFeature');
     expect(featureObj.getFeatureId()).toBe('defaultfeature');
     expect(featureObj.getFeatureDataType()).toBe('NUMERIC');
+    expect(featureObj.getFeatureDataFormat()).toBeNull();
     expect(featureObj.isEnabled()).toBe(false);
     expect(featureObj.getCurrentValue()).toBeNull();
   });
