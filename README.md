@@ -84,7 +84,7 @@ client.setContext(collectionId, environmentId, {
 
 When persistent cache is enabled, the SDK will keep the last known good configuration at the persistent cache. In the case of App Configuration server being unreachable, the latest configurations at the persistent cache is loaded to the application to continue working.
 
-Please note that PersistentCacheDirectory (or cache file) is not deleted in any case. For example, consider the case when a kubernetes pod is restarted and the cache file (appconfiguration.json) was stored in ephemeral volume of the pod. As pod gets restarted, kubernetes destroys the ephermal volume in the pod, hence the cache file gets deleted. Make sure you use the persistent volume to store the cache file.
+Please note that PersistentCacheDirectory (or cache file) is not deleted in any case. For example, consider the case when a kubernetes pod is restarted and the cache file (appconfiguration.json) was stored in ephemeral volume of the pod. As pod gets restarted, kubernetes destroys the ephermal volume in the pod, hence the cache file gets deleted. So, make sure you use the persistent volume to store the cache file.
 
 ### (Optional)
 The SDK is also designed to serve configurations, perform feature flag & property evaluations without being connected to App Configuration service.
