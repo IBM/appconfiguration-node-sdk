@@ -101,7 +101,7 @@ client.setContext(collectionId, environmentId, {
 ```javascript
 const feature = client.getFeature('online-check-in'); //feature can be null incase of an invalid feature id
 
-if (feature) {
+if (feature != null) {
   console.log(`Feature Name ${feature.getFeatureName()} `);
   console.log(`Feature Id ${feature.getFeatureId()} `);
   console.log(`Feature Type ${feature.getFeatureDataType()} `);
@@ -120,7 +120,7 @@ const features = client.getFeatures();
 
 const feature = features['online-check-in'];
 
-if (feature) {
+if (feature != null) {
   console.log(`Feature Name ${feature.getFeatureName()} `);
   console.log(`Feature Id ${feature.getFeatureId()} `);
   console.log(`Feature Type ${feature.getFeatureDataType()} `);
@@ -161,7 +161,7 @@ unique entityId as the parameter to perform the feature flag evaluation.
 ```javascript
 const property = client.getProperty('check-in-charges'); //property can be null incase of an invalid property id
 
-if (property) {
+if (property != null) {
   console.log(`Property Name ${property.getPropertyName()} `);
   console.log(`Property Id ${property.getPropertyId()} `);
   console.log(`Property Type ${property.getPropertyDataType()} `);
@@ -175,7 +175,7 @@ const properties = client.getProperties();
 
 const property = properties['check-in-charges'];
 
-if (property) {
+if (property != null) {
   console.log(`Property Name ${property.getPropertyName()} `);
   console.log(`Property Id ${property.getPropertyId()} `);
   console.log(`Property Type ${property.getPropertyDataType()} `);
