@@ -80,9 +80,11 @@ client.setContext(collectionId, environmentId, {
   persistentCacheDirectory: '/var/lib/docker/volumes/'
 })
 ```
-* persistentCacheDirectory: Absolute path to a directory which has read & write permission for the user. The SDK will create a file - `AppConfiguration.json` in the specified directory, and it will be used as the persistent cache to store the App Configuration service information.
+* persistentCacheDirectory: Absolute path to a directory which has read & write permission for the user. The SDK will create a file - `appconfiguration.json` in the specified directory, and it will be used as the persistent cache to store the App Configuration service information.
 
 When persistent cache is enabled, the SDK will keep the last known good configuration at the persistent cache. In the case of App Configuration server being unreachable, the latest configurations at the persistent cache is loaded to the application to continue working.
+
+Please ensure that the cache file is not lost or deleted in any case. For example, consider the case when a kubernetes pod is restarted and the cache file (appconfiguration.json) was stored in ephemeral volume of the pod. As pod gets restarted, kubernetes destroys the ephermal volume in the pod, as a result the cache file gets deleted. So, make sure that the cache file created by the SDK is always stored in persistent volume by providing the correct absolute path of the persistent directory.
 
 ### (Optional)
 The SDK is also designed to serve configurations, perform feature flag & property evaluations without being connected to App Configuration service.
