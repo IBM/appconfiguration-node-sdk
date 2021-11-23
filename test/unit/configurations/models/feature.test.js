@@ -16,6 +16,11 @@
 
 const { Feature } = require('../../../../lib/configurations/models/Feature');
 
+// isEnabled() & getCurrentValue() are recorded as metering.
+// These both methods requires configuration handler module to be initialised
+const { configurationHandler } = require('../../../../lib/configurations/ConfigurationHandler');
+configurationHandler.getInstance();
+
 let featureObj;
 
 function setupFeature(featureType, enabledValue, disabledValue, enabled, format) {
