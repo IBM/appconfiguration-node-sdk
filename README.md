@@ -49,13 +49,16 @@ const region = AppConfiguration.REGION_US_SOUTH;
 const guid = '<guid>';
 const apikey = '<apikey>';
 
-const client = AppConfiguration.getInstance();
-client.init(region, guid, apikey);
-
 const collectionId = 'airlines-webapp';
 const environmentId = 'dev';
-client.setContext(collectionId, environmentId);
+
+const appConfigClient = AppConfiguration.getInstance();
+appConfigClient.init(region, guid, apikey);
+appConfigClient.setContext(collectionId, environmentId);
 ```
+:red_circle: **Important** :red_circle:
+
+The **`init()`** and **`setContext()`** are the initialisation methods and should be invoked **only once** using appConfigClient. The appConfigClient, once initialised, can be obtained across modules using **`AppConfiguration.getInstance()`**.  [See this example below](#fetching-the-appconfigclient-across-other-modules).
 
 - region : Region name where the App Configuration service instance is created. Use
     - `AppConfiguration.REGION_US_SOUTH` for Dallas
@@ -65,18 +68,17 @@ client.setContext(collectionId, environmentId);
   Configuration dashboard.
 - apikey : ApiKey of the App Configuration service. Obtain it from the service credentials section of the App
   Configuration dashboard.
-
-* collectionId: Id of the collection created in App Configuration service instance under the **Collections** section.
-* environmentId: Id of the environment created in App Configuration service instance under the **Environments** section.
+- collectionId: Id of the collection created in App Configuration service instance under the **Collections** section.
+- environmentId: Id of the environment created in App Configuration service instance under the **Environments** section.
 
 ### (Optional) 
 In order for your application and SDK to continue its operations even during the unlikely scenario of App Configuration service across your application restarts, you can configure the SDK to work using a persistent cache. The SDK uses the persistent cache to store the App Configuration data that will be available across your application restarts.
 ```javascript
 // 1. default (without persistent cache)
-client.setContext(collectionId, environmentId)
+appConfigClient.setContext(collectionId, environmentId)
 
-// 2. with persistent cache
-client.setContext(collectionId, environmentId, {
+// 2. optional (with persistent cache)
+appConfigClient.setContext(collectionId, environmentId, {
   persistentCacheDirectory: '/var/lib/docker/volumes/'
 })
 ```
@@ -89,7 +91,7 @@ Please ensure that the cache file is not lost or deleted in any case. For exampl
 ### (Optional)
 The SDK is also designed to serve configurations, perform feature flag & property evaluations without being connected to App Configuration service.
 ```javascript
-client.setContext(collectionId, environmentId, {
+appConfigClient.setContext(collectionId, environmentId, {
   bootstrapFile: 'saflights/flights.json',
   liveConfigUpdateEnabled: false
 })
@@ -101,7 +103,7 @@ client.setContext(collectionId, environmentId, {
 ## Get single feature
 
 ```javascript
-const feature = client.getFeature('online-check-in'); //feature can be null incase of an invalid feature id
+const feature = appConfigClient.getFeature('online-check-in'); //feature can be null incase of an invalid feature id
 
 if (feature) {
   console.log(`Feature Name ${feature.getFeatureName()} `);
@@ -118,7 +120,7 @@ if (feature) {
 ## Get all features
 
 ```javascript
-const features = client.getFeatures();
+const features = appConfigClient.getFeatures();
 
 const feature = features['online-check-in'];
 
@@ -161,7 +163,7 @@ unique entityId as the parameter to perform the feature flag evaluation.
 ## Get single property
 
 ```javascript
-const property = client.getProperty('check-in-charges'); //property can be null incase of an invalid property id
+const property = appConfigClient.getProperty('check-in-charges'); //property can be null incase of an invalid property id
 
 if (property) {
   console.log(`Property Name ${property.getPropertyName()} `);
@@ -173,7 +175,7 @@ if (property) {
 ## Get all properties
 
 ```javascript
-const properties = client.getProperties();
+const properties = appConfigClient.getProperties();
 
 const property = properties['check-in-charges'];
 
@@ -210,6 +212,21 @@ unique entityId as the parameter to perform the property evaluation.
     const propertyValue = property.getCurrentValue(entityId);
     ```
 
+## Fetching the appConfigClient across other modules
+
+Once the SDK is initialized, the appConfigClient  can be obtained across other modules as shown below:
+
+```JS
+// **other modules**
+
+const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
+const appConfigClient = AppConfiguration.getInstance();
+
+feature = appConfigClient.getFeature('online-check-in');
+const enabled = feature.isEnabled();
+const featureValue = feature.getCurrentValue(entityId, entityAttributes)
+```
+
 ## Supported Data types
 
 App Configuration service allows to configure the feature flag and properties in the following data types : Boolean,
@@ -230,7 +247,7 @@ format accordingly as shown in the below table.
 <details><summary>Feature flag</summary>
 
   ```javascript
-  const feature = client.getFeature('json-feature');
+  const feature = appConfigClient.getFeature('json-feature');
   feature.getFeatureDataType(); // STRING
   feature.getFeatureDataFormat(); // JSON
 
@@ -238,7 +255,7 @@ format accordingly as shown in the below table.
   let result = feature.getCurrentValue(entityId, entityAttributes);
   console.log(result.key) // prints the value of the key
 
-  const feature = client.getFeature('yaml-feature');
+  const feature = appConfigClient.getFeature('yaml-feature');
   feature.getFeatureDataType(); // STRING
   feature.getFeatureDataFormat(); // YAML
   feature.getCurrentValue(entityId, entityAttributes); // returns the stringified yaml (check above table)
@@ -247,7 +264,7 @@ format accordingly as shown in the below table.
 <details><summary>Property</summary>
 
   ```javascript
-  const property = client.getProperty('json-property');
+  const property = appConfigClient.getProperty('json-property');
   property.getPropertyDataType(); // STRING
   property.getPropertyDataFormat(); // JSON
 
@@ -255,7 +272,7 @@ format accordingly as shown in the below table.
   let result = property.getCurrentValue(entityId, entityAttributes);
   console.log(result.key) // prints the value of the key
 
-  const property = client.getProperty('yaml-property');
+  const property = appConfigClient.getProperty('yaml-property');
   property.getPropertyDataType(); // STRING
   property.getPropertyDataFormat(); // YAML
   property.getCurrentValue(entityId, entityAttributes); // returns the stringified yaml (check above table)
@@ -264,12 +281,15 @@ format accordingly as shown in the below table.
 
 ## Set listener for feature and property data changes
 
-To listen to the configurations changes in your App Configuration service instance, implement the `configurationUpdate`
-event listener as mentioned below
+The SDK provides an event-based mechanism to notify you in real-time when feature flag's or property's configuration changes. You can listen to `configurationUpdate` event using the same appConfigClient.
 
-```javascript
-client.emitter.on('configurationUpdate', () => {
-  // add your code
+```JS
+appConfigClient.emitter.on('configurationUpdate', () => {
+  // **add your code**
+  // To find the effect of any configuration changes, you can call the feature or property related methods
+
+  // feature = appConfigClient.getFeature('online-check-in');
+  // newValue = feature.getCurrentValue(entityId, entityAttributes);
 });
 ```
 
@@ -278,7 +298,7 @@ client.emitter.on('configurationUpdate', () => {
 Use this method to enable/disable the logging in SDK.
 
 ```javascript
-client.setDebug(true);
+appConfigClient.setDebug(true);
 ```
 
 ## Examples
