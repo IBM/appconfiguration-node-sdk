@@ -64,6 +64,7 @@ The **`init()`** and **`setContext()`** are the initialisation methods and shoul
     - `AppConfiguration.REGION_US_SOUTH` for Dallas
     - `AppConfiguration.REGION_EU_GB` for London
     - `AppConfiguration.REGION_AU_SYD` for Sydney
+    - `AppConfiguration.REGION_US_EAST` for Washington DC
 - guid : Instance Id of the App Configuration service. Obtain it from the service credentials section of the App
   Configuration dashboard.
 - apikey : ApiKey of the App Configuration service. Obtain it from the service credentials section of the App
