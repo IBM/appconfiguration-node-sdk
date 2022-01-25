@@ -1,5 +1,7 @@
 ## Generate reference documentation
 
+**Disclaimer**: This is for development purpose only.
+
 ```sh
 $ npm install
 $ cd ./docs
