@@ -1,12 +1,1 @@
-[
-    {
-        "cve": "SNYK-JS-MARKDOWNIT-2331914",
-        "expiration": "2022-02-28T00:00:00+05:30",
-        "comment": "Refer git issue https://github.ibm.com/devx-app-services/planning/issues/8609"
-    },
-    {
-        "cve": "SNYK-JS-ISTANBULREPORTS-2328088",
-        "expiration": "2022-02-28T00:00:00+05:30",
-        "comment": "Refer git issue https://github.ibm.com/devx-app-services/planning/issues/8609"
-    }
-]
+[]
