@@ -52,21 +52,21 @@
 
     Name: User's location
     Property ID: users-location
-    Property type: String
-    Default value: other
+    Property type & format: String & Text
+    Property value: other
     Add this property to the above collection created "Car Rentals"
     ```
 - Click `Add targeting` on the feature flag created & target this feature flag to the segment.
     ```
     Select the segment "Users from Bangalore urban area" from the dropdown.
-    Choose Override enabled value, and give some value(say 25) in the textarea.
-    Click Save rule & Add the targeting.
+    Click on radio button "Override" in the Enabled value section, and give some value(say 25) in the below numeric input.
+    Next, click on "Save rule" & and then click on "Add targeting". This applies the targeting to the feature flag.
     ```
 - Click `Add targeting` on the property created & target this property to the segment.
     ```
     Select the segment "Users from Bangalore urban area" from the dropdown.
-    Choose Override enabled value, and give the value(say "Bangalore") in the textarea.
-    Click Save rule & Add the targeting.
+    Click on radio button "Override" in the Property value section, and give the value(say "Bangalore") in the below text input.
+    Next, click on "Save rule" & and then click on "Add targeting". This applies the targeting to the property.
     ```
 
 ## Step 4: Run the app
