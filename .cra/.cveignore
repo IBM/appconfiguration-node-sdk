@@ -1,1 +1,7 @@
-[]
+[
+    {
+        "cve": "SNYK-JS-MINIMIST-2429795",
+        "alwaysOmit": true,
+        "comment": "Dev dependency"
+    }
+]
