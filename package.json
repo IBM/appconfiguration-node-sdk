@@ -1,6 +1,6 @@
 {
   "name": "ibm-appconfiguration-node-sdk",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "IBM Cloud App Configuration Node.js SDK",
   "main": "./lib/AppConfiguration.js",
   "scripts": {
@@ -28,8 +28,8 @@
     "eslint": "^7.27.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.23.3",
-    "jest": "^27.4.7",
+    "eslint-plugin-import": "^2.25.4",
+    "jest": "^27.5.1",
     "jsdoc": "^3.6.10"
   },
   "jest": {
