@@ -24,16 +24,18 @@ const data = {
     type: 'BOOLEAN',
     enabled_value: false,
     disabled_value: false,
-    segment_rules: [{ rules: [{ segments: ['kp3ydh3k'] }], value: true, order: 1 }],
+    segment_rules: [{ rules: [{ segments: ['kp3ydh3k'] }], value: true, order: 1, rollout_percentage: 100 }],
     enabled: true,
+    rollout_percentage: 100
   }, {
     name: 'Weekend discount',
     feature_id: 'weekend-discount',
     type: 'NUMERIC',
     enabled_value: 5,
     disabled_value: 0,
-    segment_rules: [{ rules: [{ segments: ['kp3yb6t1'] }], value: 25, order: 1 }],
+    segment_rules: [{ rules: [{ segments: ['kp3yb6t1'] }], value: 25, order: 1, rollout_percentage: 90 }],
     enabled: true,
+    rollout_percentage: 50
   }],
   properties: [{
     name: 'Age',

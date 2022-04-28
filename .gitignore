@@ -2,7 +2,8 @@
 **/node_modules
 **/.npmrc
 /docs/jsdoc
-/lib/configurations/internal/appconfiguration.json
+examples/package-lock.json
+test/unit/configurations/appconfiguration.json
 
 # Coverage directory used by tools like jest
 coverage
