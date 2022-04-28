@@ -16,7 +16,7 @@
 
 const { Feature } = require('../../../../lib/configurations/models/Feature');
 
-// isEnabled() & getCurrentValue() are recorded as metering.
+// isEnabled & getCurrentValue are recorded as metering.
 // These both methods requires configuration handler module to be initialised
 const { configurationHandler } = require('../../../../lib/configurations/ConfigurationHandler');
 configurationHandler.getInstance();
@@ -45,7 +45,6 @@ describe('feature details', () => {
     expect(featureObj.getFeatureId()).toBe('defaultfeature');
     expect(featureObj.getFeatureDataType()).toBe('BOOLEAN');
     expect(featureObj.getFeatureDataFormat()).toBeNull();
-    expect(featureObj.isEnabled()).toBe(false);
     expect(featureObj.getCurrentValue()).toBeNull();
   });
 
@@ -55,7 +54,6 @@ describe('feature details', () => {
     expect(featureObj.getFeatureId()).toBe('defaultfeature');
     expect(featureObj.getFeatureDataType()).toBe('STRING');
     expect(featureObj.getFeatureDataFormat()).toBe('TEXT');
-    expect(featureObj.isEnabled()).toBe(true);
     expect(featureObj.getCurrentValue()).toBeNull();
   });
 
@@ -65,7 +63,6 @@ describe('feature details', () => {
     expect(featureObj.getFeatureId()).toBe('defaultfeature');
     expect(featureObj.getFeatureDataType()).toBe('STRING');
     expect(featureObj.getFeatureDataFormat()).toBe('JSON');
-    expect(featureObj.isEnabled()).toBe(true);
     expect(featureObj.getCurrentValue()).toBeNull();
   });
 
@@ -75,7 +72,6 @@ describe('feature details', () => {
     expect(featureObj.getFeatureId()).toBe('defaultfeature');
     expect(featureObj.getFeatureDataType()).toBe('STRING');
     expect(featureObj.getFeatureDataFormat()).toBe('YAML');
-    expect(featureObj.isEnabled()).toBe(true);
     expect(featureObj.getCurrentValue()).toBeNull();
   });
 
@@ -85,7 +81,6 @@ describe('feature details', () => {
     expect(featureObj.getFeatureId()).toBe('defaultfeature');
     expect(featureObj.getFeatureDataType()).toBe('NUMERIC');
     expect(featureObj.getFeatureDataFormat()).toBeNull();
-    expect(featureObj.isEnabled()).toBe(false);
     expect(featureObj.getCurrentValue()).toBeNull();
   });
 });

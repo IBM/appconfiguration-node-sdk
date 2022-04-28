@@ -66,21 +66,29 @@ describe('configuration handler', () => {
 
   test('evaluate feature', () => {
     const featureJson = {
-      name: 'Prime cars',
-      feature_id: 'prime-cars',
-      type: 'BOOLEAN',
-      enabled_value: false,
-      disabled_value: false,
+      name: 'Weekend discount',
+      feature_id: 'weekend-discount',
+      type: 'NUMERIC',
+      enabled_value: 5,
+      disabled_value: 0,
       segment_rules: [
-        { rules: [{ segments: ['kp3ydh3k'] }], value: true, order: 1 },
+        { rules: [{ segments: ['kp3yb6t1'] }], value: 25, order: 1, rollout_percentage: 90 },
       ],
       enabled: true,
+      rollout_percentage: 50
     };
 
-    const featureObj = configurationHandlerInstance.getFeature('prime-cars');
+    const featureObj = configurationHandlerInstance.getFeature('weekend-discount');
     expect(featureObj).toEqual(featureJson);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { paid: true })).toBe(true);
-    expect(featureObj.getCurrentValue('id1', { paid: true })).toBe(true);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', {}).current_value).toBe(0);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com', band_level: '7' }).current_value).toBe(25);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com',  band_level: '6' }).current_value).toBe(0);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', {}).current_value).toBe(5);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'alice@ibm.com',  band_level: '7' }).current_value).toBe(25);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'bob@ibm.com',  band_level: '7' }).current_value).toBe(5);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id6', { email: 'bob@ibm.com',  band_level: '7' }).current_value).toBe(0);
+    expect(featureObj.getCurrentValue('id1', { email: 'alice@ibm.com', band_level: '7' })).toBe(25);
+    expect(featureObj.isEnabled()).toBe(true);
   });
 
   test('get methods', () => {

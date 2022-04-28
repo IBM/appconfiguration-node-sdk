@@ -104,9 +104,9 @@ appConfigClient.setContext(collectionId, environmentId, {
 ## Get single feature
 
 ```javascript
-const feature = appConfigClient.getFeature('online-check-in'); //feature can be null incase of an invalid feature id
+const feature = appConfigClient.getFeature('online-check-in'); // feature can be null incase of an invalid feature id
 
-if (feature) {
+if (feature != null) {
   console.log(`Feature Name ${feature.getFeatureName()} `);
   console.log(`Feature Id ${feature.getFeatureId()} `);
   console.log(`Feature Type ${feature.getFeatureDataType()} `);
@@ -122,51 +122,39 @@ if (feature) {
 
 ```javascript
 const features = appConfigClient.getFeatures();
-
 const feature = features['online-check-in'];
 
-if (feature) {
+if (feature != null) {
   console.log(`Feature Name ${feature.getFeatureName()} `);
   console.log(`Feature Id ${feature.getFeatureId()} `);
   console.log(`Feature Type ${feature.getFeatureDataType()} `);
-  console.log(`Feature is enabled ${feature.isEnabled()} `);
+  console.log(`Is feature enabled? ${feature.isEnabled()} `);
 }
 ```
 
 ## Evaluate a feature
 
-Use the `feature.getCurrentValue(entityId, entityAttributes)` method to evaluate the value of the feature flag. Pass an
-unique entityId as the parameter to perform the feature flag evaluation.
+Use the `feature.getCurrentValue(entityId, entityAttributes)` method to evaluate the value of the feature flag.
+This method returns one of the Enabled/Disabled/Overridden value based on the evaluation. The data type of returned value matches that of feature flag.
 
-### Usage
+```javascript
+const entityId = 'john_doe';
+const entityAttributes = {
+  city: 'Bangalore',
+  country: 'India',
+};
 
-- If the feature flag is configured with segments in the App Configuration service, provide a json object
-  as `entityAttributes` parameter to this method.
-
-    ```javascript
-    const entityId = 'john_doe';
-    const entityAttributes = {
-      city: 'Bangalore',
-      country: 'India',
-    };
-
-    const featureValue = feature.getCurrentValue(entityId, entityAttributes);
-    ```
-- If the feature flag is not targeted to any segments and the feature flag is **turned ON** this method returns the
-  feature **enabled value**. And when the feature flag is **turned OFF** this method returns the feature **disabled
-  value**.
-
-    ```javascript
-    const entityId = 'john_doe';
-    const featureValue = feature.getCurrentValue(entityId);
-    ```
+const featureValue = feature.getCurrentValue(entityId, entityAttributes);
+```
+- entityId: Id of the Entity. This will be a string identifier related to the Entity against which the feature is evaluated. For example, an entity might be an instance of an app that runs on a mobile device, a microservice that runs on the cloud, or a component of infrastructure that runs that microservice. For any entity to interact with App Configuration, it must provide a unique entity ID.
+- entityAttributes: A JSON object consisting of the attribute name and their values that defines the specified entity. This is an optional parameter if the feature flag is not configured with any targeting definition. If the targeting is configured, then entityAttributes should be provided for the rule evaluation. An attribute is a parameter that is used to define a segment. The SDK uses the attribute values to determine if the specified entity satisfies the targeting rules, and returns the appropriate feature flag value.
 
 ## Get single property
 
 ```javascript
-const property = appConfigClient.getProperty('check-in-charges'); //property can be null incase of an invalid property id
+const property = appConfigClient.getProperty('check-in-charges'); // property can be null incase of an invalid property id
 
-if (property) {
+if (property != null) {
   console.log(`Property Name ${property.getPropertyName()} `);
   console.log(`Property Id ${property.getPropertyId()} `);
   console.log(`Property Type ${property.getPropertyDataType()} `);
@@ -177,10 +165,9 @@ if (property) {
 
 ```javascript
 const properties = appConfigClient.getProperties();
-
 const property = properties['check-in-charges'];
 
-if (property) {
+if (property != null) {
   console.log(`Property Name ${property.getPropertyName()} `);
   console.log(`Property Id ${property.getPropertyId()} `);
   console.log(`Property Type ${property.getPropertyDataType()} `);
@@ -189,35 +176,26 @@ if (property) {
 
 ## Evaluate a property
 
-Use the `property.getCurrentValue(entityId, entityAttributes)` method to evaluate the value of the property. Pass an
-unique entityId as the parameter to perform the property evaluation.
+Use the `property.getCurrentValue(entityId, entityAttributes)` method to evaluate the value of the property.
+This method returns the default property value or its overridden value based on the evaluation. The data type of returned value matches that of property.
 
-### Usage
+```javascript
+const entityId = 'john_doe';
+const entityAttributes = {
+  city: 'Bangalore',
+  country: 'India',
+};
 
-- If the property is configured with segments in the App Configuration service, provide a json object
-  as `entityAttributes` parameter to this method.
-
-    ```javascript
-    const entityId = 'john_doe';
-    const entityAttributes = {
-      city: 'Bangalore',
-      country: 'India',
-    };
-
-    const propertyValue = property.getCurrentValue(entityId, entityAttributes);
-    ```
-- If the property is not targeted to any segments this method returns the property value.
-
-    ```javascript
-    const entityId = 'john_doe';
-    const propertyValue = property.getCurrentValue(entityId);
-    ```
+const propertyValue = property.getCurrentValue(entityId, entityAttributes);
+```
+- entityId: Id of the Entity. This will be a string identifier related to the Entity against which the property is evaluated. For example, an entity might be an instance of an app that runs on a mobile device, a microservice that runs on the cloud, or a component of infrastructure that runs that microservice. For any entity to interact with App Configuration, it must provide a unique entity ID.
+- entityAttributes: A JSON object consisting of the attribute name and their values that defines the specified entity. This is an optional parameter if the property is not configured with any targeting definition. If the targeting is configured, then entityAttributes should be provided for the rule evaluation. An attribute is a parameter that is used to define a segment. The SDK uses the attribute values to determine if the specified entity satisfies the targeting rules, and returns the appropriate property value.
 
 ## Fetching the appConfigClient across other modules
 
-Once the SDK is initialized, the appConfigClient  can be obtained across other modules as shown below:
+Once the SDK is initialized, the appConfigClient can be obtained across other modules as shown below:
 
-```JS
+```javascript
 // **other modules**
 
 const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
@@ -284,7 +262,7 @@ format accordingly as shown in the below table.
 
 The SDK provides an event-based mechanism to notify you in real-time when feature flag's or property's configuration changes. You can listen to `configurationUpdate` event using the same appConfigClient.
 
-```JS
+```javascript
 appConfigClient.emitter.on('configurationUpdate', () => {
   // **add your code**
   // To find the effect of any configuration changes, you can call the feature or property related methods

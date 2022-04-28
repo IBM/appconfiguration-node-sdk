@@ -64,7 +64,7 @@ const server = http.createServer((req, res) => {
       const featureName = features[feature].getFeatureName();
       const featureDataType = features[feature].getFeatureDataType();
       const isFeatureEnabled = features[feature].isEnabled();
-      html += `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Is feature enabled: ${isFeatureEnabled}</h1><br>`;
+      html += `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Is feature enabled?: ${isFeatureEnabled}</h1><br>`;
     });
     res.write(html);
     res.end();
@@ -85,7 +85,7 @@ const server = http.createServer((req, res) => {
     Object.keys(properties).forEach((property) => {
       const propertyName = properties[property].getPropertyName();
       const propertyDataType = properties[property].getPropertyDataType();
-      const propertyValue = properties[property].getCurrentValue(entityId);
+      const propertyValue = properties[property].getCurrentValue(entityId, entityAttributes);
       html += `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${propertyValue}</h1><br>`;
     });
     res.write(html);

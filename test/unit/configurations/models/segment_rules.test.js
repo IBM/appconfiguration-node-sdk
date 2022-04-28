@@ -29,6 +29,7 @@ function setupRules() {
     ],
     value: 25,
     order: 1,
+    rollout_percentage: 45
   };
 
   segmentRulesObj = new SegmentRules(segmentRules);
@@ -40,5 +41,6 @@ describe('segment rules', () => {
     expect(segmentRulesObj.getRules().length).toEqual(1);
     expect(segmentRulesObj.getValue()).toEqual(25);
     expect(segmentRulesObj.getOrder()).toEqual(1);
+    expect(segmentRulesObj.getRolloutPercentage()).toEqual(45);
   });
 });
