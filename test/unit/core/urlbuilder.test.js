@@ -19,11 +19,11 @@ const { UrlBuilder } = require('../../../lib/core/UrlBuilder');
 const urlBuilder = UrlBuilder.getInstance();
 urlBuilder.setRegion('region');
 urlBuilder.setGuid('guid');
-urlBuilder.setOverrideServerHost('my.custom.domain');
+urlBuilder.setBaseServiceUrl('https://my.custom.domain');
 
 const expectedIamUrl = 'https://iam.test.cloud.ibm.com';
 const expectedSocketUrl = 'wss://my.custom.domain/apprapp/wsfeature?instance_id=guid&collection_id=collection_id&environment_id=environment_id';
-const expectedBaseServiceUrl = 'my.custom.domain';
+const expectedBaseServiceUrl = 'https://my.custom.domain';
 
 describe('url builder', () => {
   test('iam url', () => {
