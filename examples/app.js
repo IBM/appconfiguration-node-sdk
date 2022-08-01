@@ -50,9 +50,9 @@ const server = http.createServer((req, res) => {
     const feature = client.getFeature(process.env.FEATURE_ID);
     const featureName = feature.getFeatureName();
     const featureDataType = feature.getFeatureDataType();
-    const featureValue = feature.getCurrentValue(entityId, entityAttributes);
+    const result = feature.getCurrentValue(entityId, entityAttributes);
 
-    const html = `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Feature evaluated value:${featureValue}</h1>`;
+    const html = `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Feature evaluated value:${result.value}</h1><h1>Feature enabled for entity ${entityId}?: ${result.isEnabled}</h1>`;
     res.write(html);
     res.end();
   } else if (url === '/getfeatures') {
@@ -64,7 +64,7 @@ const server = http.createServer((req, res) => {
       const featureName = features[feature].getFeatureName();
       const featureDataType = features[feature].getFeatureDataType();
       const isFeatureEnabled = features[feature].isEnabled();
-      html += `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Is feature enabled?: ${isFeatureEnabled}</h1><br>`;
+      html += `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Is feature flag enabled?: ${isFeatureEnabled}</h1><br>`;
     });
     res.write(html);
     res.end();
@@ -72,9 +72,9 @@ const server = http.createServer((req, res) => {
     const property = client.getProperty(process.env.PROPERTY_ID);
     const propertyName = property.getPropertyName();
     const propertyDataType = property.getPropertyDataType();
-    const propertyValue = property.getCurrentValue(entityId, entityAttributes);
+    const result = property.getCurrentValue(entityId, entityAttributes);
 
-    const html = `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${propertyValue}</h1>`;
+    const html = `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${result.value}</h1>`;
     res.write(html);
     res.end();
   } else if (url === '/getproperties') {
@@ -85,8 +85,8 @@ const server = http.createServer((req, res) => {
     Object.keys(properties).forEach((property) => {
       const propertyName = properties[property].getPropertyName();
       const propertyDataType = properties[property].getPropertyDataType();
-      const propertyValue = properties[property].getCurrentValue(entityId, entityAttributes);
-      html += `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${propertyValue}</h1><br>`;
+      const result = properties[property].getCurrentValue(entityId, entityAttributes);
+      html += `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${result.value}</h1><br>`;
     });
     res.write(html);
     res.end();
