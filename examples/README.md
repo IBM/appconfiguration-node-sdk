@@ -45,7 +45,9 @@
     Enabled value: 10
     Disabled value: 0
     Add this feature flag to the above collection created "Car Rentals"
+    Feature rollout percentage: Any value between 0 to 100
     ```
+    > Learn more about configuring rollout percentage from [here](https://cloud.ibm.com/docs/app-configuration?topic=app-configuration-ac-feature-flags#configure-rollout-percentage).
 - Navigate to Properties section and create a property by clicking on create button.
     ```
     //Property details
@@ -59,7 +61,8 @@
 - Click `Add targeting` on the feature flag created & target this feature flag to the segment.
     ```
     Select the segment "Users from Bangalore urban area" from the dropdown.
-    Click on radio button "Override" in the Enabled value section, and give some value(say 25) in the below numeric input.
+    Click on radio button "Override" in the Rollout percentage section, and set the rollout percentage for the segment between 0 to 100.
+    Click on radio button "Override" in the Enabled value section of the same Rule, and give some value(say 25) in the numeric input.
     Next, click on "Save rule" & and then click on "Add targeting". This applies the targeting to the feature flag.
     ```
 - Click `Add targeting` on the property created & target this property to the segment.

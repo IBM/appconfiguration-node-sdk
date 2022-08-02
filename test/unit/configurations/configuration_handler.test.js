@@ -60,8 +60,9 @@ describe('configuration handler', () => {
 
     const propertyObj = configurationHandlerInstance.getProperty('age');
     expect(propertyObj).toEqual(propertyJson);
-    expect(configurationHandlerInstance.propertyEvaluation(propertyObj, 'id1', { paid: true })).toBe(21);
-    expect(propertyObj.getCurrentValue('id1', { paid: true })).toBe(21);
+    expect(configurationHandlerInstance.propertyEvaluation(propertyObj, 'id1', { paid: true }).value).toBe(21);
+    const result = propertyObj.getCurrentValue('id1', { paid: true });
+    expect(result.value).toBe(21);
   });
 
   test('evaluate feature', () => {
@@ -80,15 +81,24 @@ describe('configuration handler', () => {
 
     const featureObj = configurationHandlerInstance.getFeature('weekend-discount');
     expect(featureObj).toEqual(featureJson);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', {}).current_value).toBe(0);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com', band_level: '7' }).current_value).toBe(25);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com',  band_level: '6' }).current_value).toBe(0);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', {}).current_value).toBe(5);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'alice@ibm.com',  band_level: '7' }).current_value).toBe(25);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'bob@ibm.com',  band_level: '7' }).current_value).toBe(5);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id6', { email: 'bob@ibm.com',  band_level: '7' }).current_value).toBe(0);
-    expect(featureObj.getCurrentValue('id1', { email: 'alice@ibm.com', band_level: '7' })).toBe(25);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', {}).value).toBe(0);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', {}).isEnabled).toBe(false);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com', band_level: '7' }).value).toBe(25);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com', band_level: '7' }).isEnabled).toBe(true);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com',  band_level: '6' }).value).toBe(0);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com',  band_level: '6' }).isEnabled).toBe(false);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', {}).value).toBe(5);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', {}).isEnabled).toBe(true);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'alice@ibm.com',  band_level: '7' }).value).toBe(25);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'alice@ibm.com',  band_level: '7' }).isEnabled).toBe(true);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'bob@ibm.com',  band_level: '7' }).value).toBe(5);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'bob@ibm.com',  band_level: '7' }).isEnabled).toBe(true);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id6', { email: 'bob@ibm.com',  band_level: '7' }).value).toBe(0);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id6', { email: 'bob@ibm.com',  band_level: '7' }).isEnabled).toBe(false);
     expect(featureObj.isEnabled()).toBe(true);
+    const result = featureObj.getCurrentValue('id1', { email: 'alice@ibm.com', band_level: '7' });
+    expect(result.value).toBe(25);
+    expect(result.isEnabled).toBe(true);
   });
 
   test('get methods', () => {

@@ -52,26 +52,28 @@ describe('App Configuration', () => {
       let entityAttributes = {
         email: 'tommartin@company.dev',
       };
-      let currentValue = feature.getCurrentValue(entityId, entityAttributes);
-      expect(currentValue).toBe('Welcome');
+      let result = feature.getCurrentValue(entityId, entityAttributes);
+      expect(result.value).toBe('Welcome');
+      expect(typeof result.isEnabled === 'boolean').toBeTruthy();
 
       entityAttributes = {
         email: 'laila@company.test',
       };
-      currentValue = feature.getCurrentValue(entityId, entityAttributes);
-      expect(currentValue).toBe('Hello');
+      result = feature.getCurrentValue(entityId, entityAttributes);
+      expect(result.value).toBe('Hello');
+      expect(typeof result.isEnabled === 'boolean').toBeTruthy();
 
       entityAttributes = {
         email: 'tommartin@tester.com',
       };
-      currentValue = property.getCurrentValue(entityId, entityAttributes);
-      expect(currentValue).toBe(81);
+      result = property.getCurrentValue(entityId, entityAttributes);
+      expect(result.value).toBe(81);
 
       entityAttributes = {
         email: 'laila@company.test',
       };
-      currentValue = property.getCurrentValue(entityId, entityAttributes);
-      expect(currentValue).toBe(25);
+      result = property.getCurrentValue(entityId, entityAttributes);
+      expect(result.value).toBe(25);
 
       done();
     });
