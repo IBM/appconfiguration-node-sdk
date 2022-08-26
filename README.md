@@ -73,7 +73,7 @@ The **`init()`** and **`setContext()`** are the initialisation methods and shoul
 - collectionId: Id of the collection created in App Configuration service instance under the **Collections** section.
 - environmentId: Id of the environment created in App Configuration service instance under the **Environments** section.
 
-### (Optional) 
+### (Optional)
 In order for your application and SDK to continue its operations even during the unlikely scenario of App Configuration service across your application restarts, you can configure the SDK to work using a persistent cache. The SDK uses the persistent cache to store the App Configuration data that will be available across your application restarts.
 ```javascript
 // 1. default (without persistent cache)
@@ -207,6 +207,43 @@ console.log(result.details.errorType); // (only if applicable, else it is undefi
 - entityId: Id of the Entity. This will be a string identifier related to the Entity against which the property is evaluated. For example, an entity might be an instance of an app that runs on a mobile device, a microservice that runs on the cloud, or a component of infrastructure that runs that microservice. For any entity to interact with App Configuration, it must provide a unique entity ID.
 - entityAttributes: A JSON object consisting of the attribute name and their values that defines the specified entity. This is an optional parameter if the property is not configured with any targeting definition. If the targeting is configured, then entityAttributes should be provided for the rule evaluation. An attribute is a parameter that is used to define a segment. The SDK uses the attribute values to determine if the specified entity satisfies the targeting rules, and returns the appropriate property value.
 
+## Get secret property
+
+Explicit method for getting the secret references stored in App Configuration.
+
+```js
+const secretPropertyObject = appConfigClient.getSecret(propertyId, secretsManagerObject);
+```
+
+- propertyId: propertyId is the unique string identifier, using this we will be able to fetch the property which will provide the necessary data to fetch the evaluated secret.
+- secretsManagerObject: secretsManagerObject is an Secret Manager client object which will be used for retrieve the actual secret during the secret property evaluation. Refer [this doc](https://cloud.ibm.com/apidocs/secrets-manager?code=node) on how to create a secret manager client object.
+
+
+## Evaluate a secret property
+
+- Use the `secretPropertyObject.getCurrentValue(entityId, entityAttributes)` method to evaluate the value of the secret property.
+
+Note that the output of this method call is different from `getCurrentValue` invoked using feature & property objects. This method returns a Promise that either resolves with the response from the secret manager or rejects with an Error. The resolved value is the actual secret value of the evaluated secret reference. The response contains the body, the headers, the status code, and the status text. If using async/await, use try/catch for handling errors.
+
+```js
+const entityId = 'john_doe';
+const entityAttributes = {
+  city: 'Bangalore',
+  country: 'India',
+};
+try {
+  const res = await secretPropertyObject.getCurrentValue(entityId, entityAttributes);
+  console.log(JSON.stringify(res, null, 2)); // view entire response.
+  console.log('Resulting secret:\n', res.result.resources[0].secret_data.payload); // the actual secret value.
+} catch (err) {
+  // handle the error
+}
+```
+
+- entityId: entityId is a string identifier related to the Entity against which the property will be evaluated. For example, an entity might be an instance of an app that runs on a mobile device, a microservice that runs on the cloud, or a component of infrastructure that runs that microservice. For any entity to interact with App Configuration, it must provide a unique entity ID.
+
+- entityAttributes: A JSON object consisting of the attribute name and their values that defines the specified entity. This is an optional parameter if the property is not configured with any targeting definition. If the targeting is configured, then entityAttributes should be provided for the rule evaluation. An attribute is a parameter that is used to define a segment. The SDK uses the attribute values to determine if the specified entity satisfies the targeting rules, and returns the appropriate value.
+
 ## Fetching the appConfigClient across other modules
 
 Once the SDK is initialized, the appConfigClient can be obtained across other modules as shown below:
@@ -225,7 +262,7 @@ const result = feature.getCurrentValue(entityId, entityAttributes)
 ## Supported Data types
 
 App Configuration service allows to configure the feature flag and properties in the following data types : Boolean,
-Numeric, String. The String data type can be of the format of a text string , JSON or YAML. The SDK processes each
+Numeric, SecretRef, String. The String data type can be of the format of a text string , JSON or YAML. The SDK processes each
 format accordingly as shown in the below table.
 
 <details><summary>View Table</summary>
@@ -237,6 +274,8 @@ format accordingly as shown in the below table.
 | "a string text"                                                                                        | STRING       | TEXT           | `string`                                              | `a string text`                                                      |
 | <pre>{<br>  "firefox": {<br>    "name": "Firefox",<br>    "pref_url": "about:config"<br>  }<br>}</pre> | STRING       | JSON           | `JSON object`                              | `{"firefox":{"name":"Firefox","pref_url":"about:config"}}` |
 | <pre>men:<br>  - John Smith<br>  - Bill Jones<br>women:<br>  - Mary Smith<br>  - Susan Williams</pre>  | STRING       | YAML           | `string`                              | `"men:\n  - John Smith\n  - Bill Jones\nwomen:\n  - Mary Smith\n  - Susan Williams"` |
+
+For property of type secret reference, refer to readme section [evaluate-a-secret-property](#evaluate-a-secret-property)
 </details>
 
 <details><summary>Feature flag</summary>

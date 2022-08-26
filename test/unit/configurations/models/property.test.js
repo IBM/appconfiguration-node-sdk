@@ -76,4 +76,13 @@ describe('property details', () => {
     expect(propertyObj.getPropertyDataFormat()).toBeNull();
     expect(propertyObj.getCurrentValue()).toBeNull();
   });
+
+  test('test SECRETREF property - text', () => {
+    setupProperty('SECRETREF', '12345');
+    expect(propertyObj.getPropertyName()).toBe('defaultProperty');
+    expect(propertyObj.getPropertyId()).toBe('defaultproperty');
+    expect(propertyObj.getPropertyDataType()).toBe('SECRETREF');
+    expect(propertyObj.getPropertyDataFormat()).toBeNull();
+    expect(propertyObj.getCurrentValue()).toBeNull();
+  });
 });
