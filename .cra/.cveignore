@@ -1,16 +1,7 @@
 [
     {
-        "cve": "SNYK-JS-MINIMIST-2429795",
+        "cve": "SNYK-JS-TAFFYDB-2992450",
         "alwaysOmit": true,
-        "comment": "Dev dependency"
-    },
-    {
-        "cve": "SNYK-JS-NWSAPI-2841516",
-        "alwaysOmit": true,
-        "comment": "Dev dependency"
-    },
-    {
-        "cve": "SNYK-JS-FILETYPE-2958042",
-        "expiration": "2022-08-03T00:00:00+05:30"
+        "comment": "Internal dependency of a dev dependency."
     }
 ]

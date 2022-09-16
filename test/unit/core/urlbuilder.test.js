@@ -35,4 +35,12 @@ describe('url builder', () => {
   test('socket url', () => {
     expect(urlBuilder.getWebSocketUrl('collection_id', 'environment_id')).toBe(expectedSocketUrl);
   });
+  test('private endpoint url', () => {
+    urlBuilder.usePrivateEndpoint(true);
+    urlBuilder.setBaseServiceUrl(null);
+    let expectedPrivateBaseServiceUrl = 'https://private.region.apprapp.cloud.ibm.com';
+    let expectedPrivateSockerUrl = 'wss://private.region.apprapp.cloud.ibm.com/apprapp/wsfeature?instance_id=guid&collection_id=collection_id&environment_id=environment_id';
+    expect(urlBuilder.getBaseServiceUrl()).toBe(expectedPrivateBaseServiceUrl);
+    expect(urlBuilder.getWebSocketUrl('collection_id', 'environment_id')).toBe(expectedPrivateSockerUrl);
+  });
 });

@@ -73,6 +73,14 @@ The **`init()`** and **`setContext()`** are the initialisation methods and shoul
 - collectionId: Id of the collection created in App Configuration service instance under the **Collections** section.
 - environmentId: Id of the environment created in App Configuration service instance under the **Environments** section.
 
+### Connect using private network connection (optional)
+Set the SDK to connect to App Configuration service by using a private endpoint that is accessible only through the IBM Cloud private network.
+
+```javascript
+appConfigClient.usePrivateEndpoint(true);
+```
+This must be done before calling the `init` function on the SDK.
+
 ### (Optional)
 In order for your application and SDK to continue its operations even during the unlikely scenario of App Configuration service across your application restarts, you can configure the SDK to work using a persistent cache. The SDK uses the persistent cache to store the App Configuration data that will be available across your application restarts.
 ```javascript

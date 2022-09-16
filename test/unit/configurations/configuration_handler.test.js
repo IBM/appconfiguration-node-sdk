@@ -21,7 +21,7 @@ let configurationHandlerInstance;
 
 async function setup() {
   configurationHandlerInstance = configurationHandler.getInstance();
-  configurationHandlerInstance.init('region', 'guid', 'apikey');
+  configurationHandlerInstance.init('region', 'guid', 'apikey', false);
   const filePath = path.join(__dirname, 'bootstrap-configurations.json');
   configurationHandlerInstance.setContext('collectionId', 'environmentId', {
     persistentCacheDirectory: __dirname,
