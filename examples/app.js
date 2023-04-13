@@ -15,87 +15,114 @@
  */
 
 require('dotenv').config();
-const http = require('http');
+const express = require('express');
 const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
 
-const hostname = '127.0.0.1';
-const port = 3000;
-
+const app = express();
 const region = process.env.REGION;
 const guid = process.env.GUID;
 const apikey = process.env.APIKEY;
+const collectionId = process.env.COLLECTION_ID;
+const environmentId = process.env.ENVIRONMENT_ID;
 
 const client = AppConfiguration.getInstance();
 client.init(region, guid, apikey);
-
-const collectionId = process.env.COLLECTION_ID;
-const environmentId = process.env.ENVIRONMENT_ID;
 client.setContext(collectionId, environmentId);
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/html');
+const entityId = 'user123';
+const entityAttributes = {
+  city: 'Bangalore',
+  radius: 60,
+};
 
-  const { url } = req;
-
-  const entityId = 'user123';
-  const entityAttributes = {
-    city: 'Bangalore',
-    radius: 60,
-  };
-  if (url === '/') {
-    res.write('<h1>Welcome to Sample App HomePage!</h1>');
-    res.end();
-  } else if (url === '/getfeature') {
-    const feature = client.getFeature(process.env.FEATURE_ID);
-    const featureName = feature.getFeatureName();
-    const featureDataType = feature.getFeatureDataType();
-    const result = feature.getCurrentValue(entityId, entityAttributes);
-
-    const html = `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Feature evaluated value:${result.value}</h1><h1>Feature enabled for entity ${entityId}?: ${result.isEnabled}</h1>`;
-    res.write(html);
-    res.end();
-  } else if (url === '/getfeatures') {
-    const features = client.getFeatures();
-
-    res.write('<h1>All features</h1>');
-    let html = '';
-    Object.keys(features).forEach((feature) => {
-      const featureName = features[feature].getFeatureName();
-      const featureDataType = features[feature].getFeatureDataType();
-      const isFeatureEnabled = features[feature].isEnabled();
-      html += `<h1>Feature Name: ${featureName}</h1><h1>Feature DataType: ${featureDataType}</h1><h1>Is feature flag enabled?: ${isFeatureEnabled}</h1><br>`;
-    });
-    res.write(html);
-    res.end();
-  } else if (url === '/getproperty') {
-    const property = client.getProperty(process.env.PROPERTY_ID);
-    const propertyName = property.getPropertyName();
-    const propertyDataType = property.getPropertyDataType();
-    const result = property.getCurrentValue(entityId, entityAttributes);
-
-    const html = `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${result.value}</h1>`;
-    res.write(html);
-    res.end();
-  } else if (url === '/getproperties') {
-    const properties = client.getProperties();
-
-    res.write('<h1>All properties</h1>');
-    let html = '';
-    Object.keys(properties).forEach((property) => {
-      const propertyName = properties[property].getPropertyName();
-      const propertyDataType = properties[property].getPropertyDataType();
-      const result = properties[property].getCurrentValue(entityId, entityAttributes);
-      html += `<h1>Property Name: ${propertyName}</h1><h1>Property DataType: ${propertyDataType}</h1><h1>Property value:${result.value}</h1><br>`;
-    });
-    res.write(html);
-    res.end();
-  } else {
-    res.write('<h1>404 NOT FOUND</h1>');
-    res.end();
-  }
+app.get('/', (req, res) => {
+  res.write('<h1>Welcome to Sample App HomePage!</h1>');
+  res.end();
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+app.get('/getfeature', (req, res) => {
+
+  const feature = client.getFeature(process.env.FEATURE_ID);
+  const featureName = feature.getFeatureName();
+  const featureDataType = feature.getFeatureDataType();
+  const result = feature.getCurrentValue(entityId, entityAttributes);
+
+  const feature_data = {
+    'Entity ID': entityId,
+    'Feature Name': featureName,
+    'Feature DataType': featureDataType,
+    'Feature evaluated value': result.value,
+    'Feature Enabled for entity?': `${result.isEnabled}`,
+  };
+  console.log(feature_data);
+
+  res.statusCode = 200;
+  res.json(feature_data);
+});
+
+app.get('/getfeatures', (req, res) => {
+
+  const features = client.getFeatures();
+
+  let allFeatures = [];
+  Object.keys(features).forEach((feature) => {
+    const featureName = features[feature].getFeatureName();
+    const featureDataType = features[feature].getFeatureDataType();
+    const isFeatureEnabled = features[feature].isEnabled();
+    allFeatures.push({
+      'Feature Name': featureName,
+      'Feature DataType': featureDataType,
+      'Is feature flag enabled?': isFeatureEnabled,
+    });
+  });
+  console.log(allFeatures);
+
+  res.statusCode = 200;
+  res.json(allFeatures);
+});
+
+app.get('/getproperty', (req, res) => {
+
+  const property = client.getProperty(process.env.PROPERTY_ID);
+  const propertyName = property.getPropertyName();
+  const propertyDataType = property.getPropertyDataType();
+  const result = property.getCurrentValue(entityId, entityAttributes);
+
+  const property_data = {
+    'Property Name': `${propertyName}`,
+    'Property DataType': `${propertyDataType}`,
+    'Property value': `${result.value}`,
+  };
+  console.log(property_data);
+
+  res.statusCode = 200;
+  res.json(property_data);
+});
+
+app.get('/getproperties', (req, res) => {
+
+  const properties = client.getProperties();
+
+  let allProperties = [];
+  Object.keys(properties).forEach((property) => {
+    const propertyName = properties[property].getPropertyName();
+    const propertyDataType = properties[property].getPropertyDataType();
+    const result = properties[property].getCurrentValue(
+      entityId,
+      entityAttributes
+    );
+    allProperties.push({
+      'Property Name': `${propertyName}`,
+      'Property DataType': `${propertyDataType}`,
+      'Property value': `${result.value}`,
+    });
+  });
+  console.log(allProperties);
+
+  res.statusCode = 200;
+  res.json(allProperties);
+});
+
+app.listen(3000, () => {
+  console.log('app is running on port 3000....');
 });
