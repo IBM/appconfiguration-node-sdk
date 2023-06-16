@@ -220,11 +220,11 @@ console.log(result.details.errorType); // (only if applicable, else it is undefi
 Explicit method for getting the secret references stored in App Configuration.
 
 ```js
-const secretPropertyObject = appConfigClient.getSecret(propertyId, secretsManagerObject);
+const secretPropertyObject = appConfigClient.getSecret(propertyId, secretsManagerService);
 ```
 
-- propertyId: propertyId is the unique string identifier, using this we will be able to fetch the property which will provide the necessary data to fetch the evaluated secret.
-- secretsManagerObject: secretsManagerObject is an Secret Manager client object which will be used for retrieve the actual secret during the secret property evaluation. Refer [this doc](https://cloud.ibm.com/apidocs/secrets-manager?code=node) on how to create a secret manager client object.
+- propertyId: propertyId is the unique string identifier, using this we will be able to fetch the property which will provide the necessary metadata to fetch the secret.
+- secretsManagerService: an initialised secrets manager client, which will be used for getting the secret data during the secret property evaluation. Create a secret manager client by referring the doc: https://cloud.ibm.com/apidocs/secrets-manager/secrets-manager-v2?code=node#authentication
 
 
 ## Evaluate a secret property
@@ -240,9 +240,8 @@ const entityAttributes = {
   country: 'India',
 };
 try {
-  const res = await secretPropertyObject.getCurrentValue(entityId, entityAttributes);
-  console.log(JSON.stringify(res, null, 2)); // view entire response.
-  console.log('Resulting secret:\n', res.result.resources[0].secret_data.payload); // the actual secret value.
+  const response = await secretPropertyObject.getCurrentValue(entityId, entityAttributes);
+  // See below to know how to access the secret data from the response
 } catch (err) {
   // handle the error
 }
@@ -251,6 +250,44 @@ try {
 - entityId: entityId is a string identifier related to the Entity against which the property will be evaluated. For example, an entity might be an instance of an app that runs on a mobile device, a microservice that runs on the cloud, or a component of infrastructure that runs that microservice. For any entity to interact with App Configuration, it must provide a unique entity ID.
 
 - entityAttributes: A JSON object consisting of the attribute name and their values that defines the specified entity. This is an optional parameter if the property is not configured with any targeting definition. If the targeting is configured, then entityAttributes should be provided for the rule evaluation. An attribute is a parameter that is used to define a segment. The SDK uses the attribute values to determine if the specified entity satisfies the targeting rules, and returns the appropriate value.
+
+## How to access the secret data from a successful response
+
+Full example:
+```js
+const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
+const { IamAuthenticator } = require('@ibm-cloud/secrets-manager/auth');
+const IbmCloudSecretsManagerApiV2 = require('@ibm-cloud/secrets-manager/secrets-manager/v2');
+
+const appConfigClient = AppConfiguration.getInstance()
+appConfigClient.init(region, guid, apikey)
+appConfigClient.setContext(collectionId, environmentId)
+
+const secretsManagerService = new IbmCloudSecretsManagerApiV2({
+    authenticator: new IamAuthenticator({
+        apikey: '<SECRETS_MANAGER_APIKEY>'
+    }),
+    serviceUrl: '<SECRETS_MANAGER_INSTANCE_URL>',
+});
+
+try {
+    const secretPropertyObject = appConfigClient.getSecret(propertyID, secretsManagerService);
+    const response = await secretPropertyObject.getCurrentValue(entityId, entityAttributes);
+
+    // For Arbitrary secret type
+    console.log(response.result.payload);
+
+    // For username-password secret type
+    console.log(response.result.username);
+    console.log(response.result.password);
+
+    // For key-value secret type
+    console.log(response.result.data['key1']);
+    console.log(response.result.data['key2']);
+} catch (err) {
+    // handle the error
+}
+```
 
 ## Fetching the appConfigClient across other modules
 

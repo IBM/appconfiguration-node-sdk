@@ -1,7 +1,7 @@
 [
     {
-        "cve": "SNYK-JS-TAFFYDB-2992450",
-        "alwaysOmit": true,
-        "comment": "Internal dependency of a dev dependency."
+        "cve": "SNYK-JS-WORDWRAP-3149973",
+        "comment": "Dev dependency.",
+        "expiration": "2023-07-01T00:00:00+05:30"
     }
 ]
