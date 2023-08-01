@@ -1,7 +1,3 @@
 [
-    {
-        "cve": "SNYK-JS-WORDWRAP-3149973",
-        "comment": "Dev dependency.",
-        "expiration": "2023-07-01T00:00:00+05:30"
-    }
+
 ]
