@@ -20,6 +20,7 @@ const urlBuilder = UrlBuilder.getInstance();
 urlBuilder.setRegion('region');
 urlBuilder.setGuid('guid');
 urlBuilder.setBaseServiceUrl('https://my.custom.domain');
+urlBuilder.setWebSocketUrl('collection_id', 'environment_id');
 
 const expectedIamUrl = 'https://iam.test.cloud.ibm.com';
 const expectedSocketUrl = 'wss://my.custom.domain/apprapp/wsfeature?instance_id=guid&collection_id=collection_id&environment_id=environment_id';
@@ -33,14 +34,15 @@ describe('url builder', () => {
     expect(urlBuilder.getBaseServiceUrl()).toBe(expectedBaseServiceUrl);
   });
   test('socket url', () => {
-    expect(urlBuilder.getWebSocketUrl('collection_id', 'environment_id')).toBe(expectedSocketUrl);
+    expect(urlBuilder.getWebSocketUrl()).toBe(expectedSocketUrl);
   });
   test('private endpoint url', () => {
     urlBuilder.usePrivateEndpoint(true);
     urlBuilder.setBaseServiceUrl(null);
+    urlBuilder.setWebSocketUrl('collection_id', 'environment_id');
     let expectedPrivateBaseServiceUrl = 'https://private.region.apprapp.cloud.ibm.com';
     let expectedPrivateSockerUrl = 'wss://private.region.apprapp.cloud.ibm.com/apprapp/wsfeature?instance_id=guid&collection_id=collection_id&environment_id=environment_id';
     expect(urlBuilder.getBaseServiceUrl()).toBe(expectedPrivateBaseServiceUrl);
-    expect(urlBuilder.getWebSocketUrl('collection_id', 'environment_id')).toBe(expectedPrivateSockerUrl);
+    expect(urlBuilder.getWebSocketUrl()).toBe(expectedPrivateSockerUrl);
   });
 });

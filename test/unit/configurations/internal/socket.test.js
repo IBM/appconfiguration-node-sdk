@@ -19,6 +19,6 @@ const { socketClient } = require('../../../../lib/configurations/internal/Socket
 describe('websocket connect', () => {
   jest.setTimeout(30000);
   test('socket connect events', () => {
-    expect(socketClient.eventNames().length).toEqual(2);
+    expect(socketClient.eventNames().length).toEqual(3);
   });
 });
