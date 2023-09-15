@@ -8,7 +8,8 @@ IBM Cloud App Configuration service.
 - [Overview](#overview)
 - [Installation](#installation)
 - [Import the SDK](#import-the-sdk)
-- [Initialize SDK](#initialize-sdk)
+- [Usage](#usage)
+- [Adding URLs to your allowlist](#adding-urls-to-your-allowlist)
 - [License](#license)
 
 ## Overview
@@ -27,51 +28,88 @@ properties for distributed applications centrally.
 Installation is done using the `npm install` command.
 
 ```bash
-$ npm install ibm-appconfiguration-node-sdk@latest
+npm install ibm-appconfiguration-node-sdk@latest
 ```
 
 > :warning: In version v0.4.0 we have made changes to the return value of `getCurrentValue` method. If you were already an existing user please read this [migration guide](docs/v0.3-v0.4.md) before you upgrade the SDK to latest.
+
 ## Import the SDK
 
 To import the module
 
 ```JS
-const {
-  AppConfiguration
-} = require('ibm-appconfiguration-node-sdk');
+const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
 ```
 
-## Initialize SDK
+## Usage
 
 Initialize the sdk to connect with your App Configuration service instance.
 
 ```JS
+// index.js
+const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
+const appConfigClient = AppConfiguration.getInstance();
+
 const region = AppConfiguration.REGION_US_SOUTH;
 const guid = '<guid>';
 const apikey = '<apikey>';
-
 const collectionId = 'airlines-webapp';
 const environmentId = 'dev';
 
-const appConfigClient = AppConfiguration.getInstance();
-appConfigClient.init(region, guid, apikey);
-appConfigClient.setContext(collectionId, environmentId);
+async function initialiseAppConfig() {
+    appConfigClient.setDebug(true); // optional. (remove if not needed)
+    appConfigClient.init(region, guid, apikey);
+    await appConfigClient.setContext(collectionId, environmentId);
+}
+
+try {
+  await initialiseAppConfig();
+  console.log("app configuration sdk init successful");
+} catch (e) {
+  console.error("failed to initialise app configuration sdk", e);
+}
 ```
-:red_circle: **Important** :red_circle:
 
-The **`init()`** and **`setContext()`** are the initialisation methods and should be invoked **only once** using appConfigClient. The appConfigClient, once initialised, can be obtained across modules using **`AppConfiguration.getInstance()`**.  [See this example below](#fetching-the-appconfigclient-across-other-modules).
+In the above snippet, the async function `initialiseAppConfig()` will return an `Promise<void>` that resolves when the configurations are successfully fetched. Else, throws error if unsuccessful.
 
-- region : Region name where the App Configuration service instance is created. Use
-    - `AppConfiguration.REGION_US_SOUTH` for Dallas
-    - `AppConfiguration.REGION_EU_GB` for London
-    - `AppConfiguration.REGION_AU_SYD` for Sydney
-    - `AppConfiguration.REGION_US_EAST` for Washington DC
-- guid : Instance Id of the App Configuration service. Obtain it from the service credentials section of the App
+> :warning: It is expected that initialisation to be done **only once**.
+
+After the SDK is initialised successfully the feature flag & properties can be retrieved using the `appConfigClient` as shown in the below code snippet.
+<details><summary>Expand to view the example snippet</summary>
+
+```js
+// other-file.js
+const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
+const appConfigClient = AppConfiguration.getInstance();
+
+const feature = appConfigClient.getFeature('online-check-in');
+if (feature !== null) {
+  const result = feature.getCurrentValue(entityId, entityAttributes);
+  console.log(result);
+}
+
+const property = appConfigClient.getProperty('check-in-charges');
+if (property !== null) {
+  const result = property.getCurrentValue(entityId, entityAttributes);
+  console.log(result);
+}
+```
+</details>
+
+where, 
+- **region** : Region name where the App Configuration service instance is created.
+    <details><summary>Example</summary>
+      <ul> AppConfiguration.REGION_US_SOUTH for Dallas </ul>
+      <ul> AppConfiguration.REGION_EU_GB for London </ul>
+      <ul> AppConfiguration.REGION_AU_SYD for Sydney </ul>
+      <ul> AppConfiguration.REGION_US_EAST for Washington DC </ul>
+    </details>
+- **guid** : Instance Id of the App Configuration service. Obtain it from the service credentials section of the App
   Configuration dashboard.
-- apikey : ApiKey of the App Configuration service. Obtain it from the service credentials section of the App
+- **apikey** : ApiKey of the App Configuration service. Obtain it from the service credentials section of the App
   Configuration dashboard.
-- collectionId: Id of the collection created in App Configuration service instance under the **Collections** section.
-- environmentId: Id of the environment created in App Configuration service instance under the **Environments** section.
+- **collectionId**: Id of the collection created in App Configuration service instance under the **Collections** section.
+- **environmentId**: Id of the environment created in App Configuration service instance under the **Environments** section.
 
 ### Connect using private network connection (optional)
 Set the SDK to connect to App Configuration service by using a private endpoint that is accessible only through the IBM Cloud private network.
@@ -84,11 +122,7 @@ This must be done before calling the `init` function on the SDK.
 ### (Optional)
 In order for your application and SDK to continue its operations even during the unlikely scenario of App Configuration service across your application restarts, you can configure the SDK to work using a persistent cache. The SDK uses the persistent cache to store the App Configuration data that will be available across your application restarts.
 ```javascript
-// 1. default (without persistent cache)
-appConfigClient.setContext(collectionId, environmentId)
-
-// 2. optional (with persistent cache)
-appConfigClient.setContext(collectionId, environmentId, {
+await appConfigClient.setContext(collectionId, environmentId, {
   persistentCacheDirectory: '/var/lib/docker/volumes/'
 })
 ```
@@ -101,11 +135,12 @@ Please ensure that the cache file is not lost or deleted in any case. For exampl
 ### (Optional)
 The SDK is also designed to serve configurations, perform feature flag & property evaluations without being connected to App Configuration service.
 ```javascript
-appConfigClient.setContext(collectionId, environmentId, {
+await appConfigClient.setContext(collectionId, environmentId, {
   bootstrapFile: 'saflights/flights.json',
   liveConfigUpdateEnabled: false
 })
 ```
+This usecase will throw error if given `bootstrapFile` is not found or if unable to parse the json coming from the bootstrap file.
 
 * bootstrapFile: Absolute path of the JSON file, which contains configuration details. Make sure to provide a proper JSON file. You can generate this file using `ibmcloud ac config` command of the IBM Cloud App Configuration CLI.
 * liveConfigUpdateEnabled: Live configuration update from the server. Set this value to `false` if the new configuration values shouldn't be fetched from the server.
@@ -247,47 +282,49 @@ try {
 }
 ```
 
-- entityId: entityId is a string identifier related to the Entity against which the property will be evaluated. For example, an entity might be an instance of an app that runs on a mobile device, a microservice that runs on the cloud, or a component of infrastructure that runs that microservice. For any entity to interact with App Configuration, it must provide a unique entity ID.
-
-- entityAttributes: A JSON object consisting of the attribute name and their values that defines the specified entity. This is an optional parameter if the property is not configured with any targeting definition. If the targeting is configured, then entityAttributes should be provided for the rule evaluation. An attribute is a parameter that is used to define a segment. The SDK uses the attribute values to determine if the specified entity satisfies the targeting rules, and returns the appropriate value.
-
 ## How to access the secret data from a successful response
 
-Full example:
-```js
-const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
-const { IamAuthenticator } = require('@ibm-cloud/secrets-manager/auth');
-const IbmCloudSecretsManagerApiV2 = require('@ibm-cloud/secrets-manager/secrets-manager/v2');
+<details><summary>Full example:</summary>
 
-const appConfigClient = AppConfiguration.getInstance()
-appConfigClient.init(region, guid, apikey)
-appConfigClient.setContext(collectionId, environmentId)
+  ```js
+  const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
+  const { IamAuthenticator } = require('@ibm-cloud/secrets-manager/auth');
+  const IbmCloudSecretsManagerApiV2 = require('@ibm-cloud/secrets-manager/secrets-manager/v2');
 
-const secretsManagerService = new IbmCloudSecretsManagerApiV2({
-    authenticator: new IamAuthenticator({
-        apikey: '<SECRETS_MANAGER_APIKEY>'
-    }),
-    serviceUrl: '<SECRETS_MANAGER_INSTANCE_URL>',
-});
+  const appConfigClient = AppConfiguration.getInstance()
+  try {
+    appConfigClient.init(region, guid, apikey)
+    await appConfigClient.setContext(collectionId, environmentId)
+  } catch (e) {
+    console.error("failed to initialise app configuration sdk", e);
+  }
 
-try {
-    const secretPropertyObject = appConfigClient.getSecret(propertyID, secretsManagerService);
-    const response = await secretPropertyObject.getCurrentValue(entityId, entityAttributes);
+  const secretsManagerService = new IbmCloudSecretsManagerApiV2({
+      authenticator: new IamAuthenticator({
+          apikey: '<SECRETS_MANAGER_APIKEY>'
+      }),
+      serviceUrl: '<SECRETS_MANAGER_INSTANCE_URL>',
+  });
 
-    // For Arbitrary secret type
-    console.log(response.result.payload);
+  try {
+      const secretPropertyObject = appConfigClient.getSecret(propertyID, secretsManagerService);
+      const response = await secretPropertyObject.getCurrentValue(entityId, entityAttributes);
 
-    // For username-password secret type
-    console.log(response.result.username);
-    console.log(response.result.password);
+      // For Arbitrary secret type
+      console.log(response.result.payload);
 
-    // For key-value secret type
-    console.log(response.result.data['key1']);
-    console.log(response.result.data['key2']);
-} catch (err) {
-    // handle the error
-}
+      // For username-password secret type
+      console.log(response.result.username);
+      console.log(response.result.password);
+
+      // For key-value secret type
+      console.log(response.result.data['key1']);
+      console.log(response.result.data['key2']);
+  } catch (err) {
+      // handle the error
+  }
 ```
+</details>
 
 ## Fetching the appConfigClient across other modules
 
@@ -384,6 +421,24 @@ appConfigClient.setDebug(true);
 
 Try [this](https://github.com/IBM/appconfiguration-node-sdk/tree/master/examples) sample application in the examples
 folder to learn more about feature and property evaluation.
+
+## Adding URLs to your allowlist
+
+This SDK requires connectivity to the internet(if bootstrap based initialisation is not done). The endpoints listed below should be reachable from the host/infrastructure where this SDK will run.
+```
+https://cloud.ibm.com:443
+https://iam.cloud.ibm.com:443
+https://{region}.apprapp.cloud.ibm.com:443
+wss://{region}.apprapp.cloud.ibm.com:443
+```
+If opted for private endpoint by setting `appConfigClient.usePrivateEndpoint(true)` then the allowlist will be
+```
+https://cloud.ibm.com:443
+https://private.iam.cloud.ibm.com:443
+https://private.{region}.apprapp.cloud.ibm.com:443
+wss://private.{region}.apprapp.cloud.ibm.com:443
+```
+where `region` is the region where your App Configuration service instance is provisioned such as `us-south`, `us-east`, `eu-gb` & `au-syd` etc.
 
 ## License
 

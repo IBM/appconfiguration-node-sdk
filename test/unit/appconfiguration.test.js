@@ -45,83 +45,94 @@ describe('feature & property methods before initialization', () => {
   test('getProperties', () => {
     expect(client.getProperties()).toBe(null);
   });
+  test('getSecret', () => {
+    expect(client.getSecret('property_id', null)).toBe(null);
+  });
 });
 
 describe('init method', () => {
   let client;
   test('no region', () => {
     client = initializeAppConfiguration();
-    expect(client.init(null, 'guid_value', 'apikey_value')).toBeUndefined();
+    expect(() => { client.init(null, 'guid_value', 'apikey_value'); }).toThrow(Error);
     client = null;
   });
   test('no guid', () => {
     client = initializeAppConfiguration();
-    expect(client.init('region_value', null, 'apikey_value')).toBeUndefined();
+    expect(() => { client.init('region_value', null, 'apikey_value'); }).toThrow(Error);
     client = null;
   });
   test('no apikey', () => {
     client = initializeAppConfiguration();
-    expect(client.init('region_value', 'guid_value', null)).toBeUndefined();
+    expect(() => { client.init('region_value', 'guid_value', null); }).toThrow(Error);
     client = null;
   });
 });
 
 describe('setContext method', () => {
   let client;
-  test('setContext without init method initialised', () => {
+  test('setContext without init method initialised', async () => {
     client = initializeAppConfiguration();
-    expect(client.setContext(null)).toBeUndefined();
+    await expect(client.setContext(null)).rejects.toThrow();
     client = null;
   });
 
-  test('no collection id', () => {
+  test('no collection id', async () => {
     client = initializeAppConfiguration();
     client.init('region_value', 'guid_value', 'apikey_value');
-    expect(client.setContext(null, 'environment_id')).toBeUndefined();
+    await expect(client.setContext(null, 'environment_id')).rejects.toThrow();
     client = null;
   });
 
-  test('no environment id', () => {
+  test('no environment id', async () => {
     client = initializeAppConfiguration();
     client.init('region_value', 'guid_value', 'apikey_value');
-    expect(client.setContext('collection_id', null)).toBeUndefined();
+    await expect(client.setContext('collection_id', null)).rejects.toThrow();
     client = null;
   });
 
-  test('test when illegal number of arguments are provided to setContext method', () => {
+  test('test setContext when persistent cache directory is not string', async () => {
     client = initializeAppConfiguration();
     client.init('region_value', 'guid_value', 'apikey_value');
-    expect(client.setContext('collection_id', 'environment_id', null, null, {
-      persistentCacheDirectory: __dirname,
-    })).toBeUndefined();
+    await expect(client.setContext('collection_id', 'environment_id', {
+      persistentCacheDirectory: true,
+    })).rejects.toThrow(Error);
     client = null;
   });
 
-  test('test offline mode by passing an empty string as config file path', async () => {
+  test('test setContext when bootstrap file is not string', async () => {
     client = initializeAppConfiguration();
     client.init('region_value', 'guid_value', 'apikey_value');
-    expect(client.setContext('collection_id', 'environment_id', null, false)).toBeUndefined();
+    await expect(client.setContext('collection_id', 'environment_id', {
+      bootstrapFile: 0,
+    })).rejects.toThrow(Error);
     client = null;
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  });
+
+  test('test setContext when liveConfigUpdateEnabled is not boolean', async () => {
+    client = initializeAppConfiguration();
+    client.init('region_value', 'guid_value', 'apikey_value');
+    await expect(client.setContext('collection_id', 'environment_id', {
+      liveConfigUpdateEnabled: 0,
+    })).rejects.toThrow(Error);
+    client = null;
   });
 
   test('test when persistent cache is enabled', async () => {
     client = initializeAppConfiguration();
     client.init('region_value', 'guid_value', 'apikey_value');
-    client.setContext('collection_id', 'environment_id', {
+    await expect(client.setContext('collection_id', 'environment_id', {
       persistentCacheDirectory: __dirname,
-    })
+    })).rejects.toThrow(Error);
     client = null;
-    await new Promise((resolve) => setTimeout(resolve, 2000));
   });
 
   test('test in-memory cache only', async () => {
     client = initializeAppConfiguration();
     client.setDebug(true);
     client.init('region_value', 'guid_value', 'apikey_value');
-    client.setContext('collection_id', 'environment_id');
+    await expect(client.setContext('collection_id', 'environment_id')).resolves.toBeUndefined();
     client = null;
-    await new Promise((resolve) => setTimeout(resolve, 2000));
   });
   jest.clearAllTimers();
 });
@@ -139,5 +150,8 @@ describe('features & properties get methods', () => {
   });
   test('getProperties', () => {
     expect(client.getProperties()).toMatchObject({});
+  });
+  test('getSecret', () => {
+    expect(client.getSecret('property_id', null)).toBe(null);
   });
 });

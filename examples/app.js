@@ -19,15 +19,7 @@ const express = require('express');
 const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
 
 const app = express();
-const region = process.env.REGION;
-const guid = process.env.GUID;
-const apikey = process.env.APIKEY;
-const collectionId = process.env.COLLECTION_ID;
-const environmentId = process.env.ENVIRONMENT_ID;
-
 const client = AppConfiguration.getInstance();
-client.init(region, guid, apikey);
-client.setContext(collectionId, environmentId);
 
 const entityId = 'user123';
 const entityAttributes = {
@@ -123,6 +115,20 @@ app.get('/getproperties', (req, res) => {
   res.json(allProperties);
 });
 
-app.listen(3000, () => {
+const region = process.env.REGION;
+const guid = process.env.GUID;
+const apikey = process.env.APIKEY;
+const collectionId = process.env.COLLECTION_ID;
+const environmentId = process.env.ENVIRONMENT_ID;
+
+app.listen(3000, async () => {
+  try {
+    client.init(region, guid, apikey);
+    await client.setContext(collectionId, environmentId);
+    console.log("app configuration sdk init successful");
+  } catch (e) {
+    console.error("failed to initialise app configuration sdk", e);
+  }
+
   console.log('app is running on port 3000....');
 });
