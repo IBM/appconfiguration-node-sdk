@@ -17,11 +17,8 @@
 require('dotenv').config();
 const { AppConfiguration } = require('../../lib/AppConfiguration');
 
-// testcase timeout value (20s).
-const timeout = 30000;
-
 describe('App Configuration', () => {
-  test('integration test', (done) => {
+  test('integration test', async () => {
     const region = process.env.REGION;
     const guid = process.env.GUID;
     const apikey = process.env.APIKEY;
@@ -31,51 +28,48 @@ describe('App Configuration', () => {
     const client = AppConfiguration.getInstance();
     expect(client).not.toBeNull();
 
-    jest.setTimeout(timeout);
+    try {
+      client.setDebug(true);
+      client.init(region, guid, apikey);
+      await client.setContext(collectionId, environmentId);
+    } catch (error) {
+      throw new Error(`It should not have come here!. ${error}`)
+    }
+    const features = client.getFeatures();
+    const feature = client.getFeature('defaultfeature');
+    expect(Object.keys(features).length).toEqual(3);
+    expect(feature).toBe('defaultfeature');
 
-    client.setDebug(true);
-    client.init(region, guid, apikey);
-    client.setContext(collectionId, environmentId);
+    const properties = client.getProperties();
+    const property = client.getProperty('numericproperty');
+    expect(Object.keys(properties).length).toEqual(1);
+    expect(property).toBe('numericproperty');
 
-    client.emitter.on('configurationUpdate', () => {
-      const features = client.getFeatures();
-      const feature = client.getFeature('defaultfeature');
-      expect(Object.keys(features).length).toEqual(3);
-      expect(feature).toBe('defaultfeature');
+    const entityId = 'developer_entity';
+    let entityAttributes = {
+      email: 'tommartin@company.dev',
+    };
+    let result = feature.getCurrentValue(entityId, entityAttributes);
+    expect(result.value).toBe('Welcome');
+    expect(typeof result.isEnabled === 'boolean').toBeTruthy();
 
-      const properties = client.getProperties();
-      const property = client.getProperty('numericproperty');
-      expect(Object.keys(properties).length).toEqual(1);
-      expect(property).toBe('numericproperty');
+    entityAttributes = {
+      email: 'laila@company.test',
+    };
+    result = feature.getCurrentValue(entityId, entityAttributes);
+    expect(result.value).toBe('Hello');
+    expect(typeof result.isEnabled === 'boolean').toBeTruthy();
 
-      const entityId = 'developer_entity';
-      let entityAttributes = {
-        email: 'tommartin@company.dev',
-      };
-      let result = feature.getCurrentValue(entityId, entityAttributes);
-      expect(result.value).toBe('Welcome');
-      expect(typeof result.isEnabled === 'boolean').toBeTruthy();
+    entityAttributes = {
+      email: 'tommartin@tester.com',
+    };
+    result = property.getCurrentValue(entityId, entityAttributes);
+    expect(result.value).toBe(81);
 
-      entityAttributes = {
-        email: 'laila@company.test',
-      };
-      result = feature.getCurrentValue(entityId, entityAttributes);
-      expect(result.value).toBe('Hello');
-      expect(typeof result.isEnabled === 'boolean').toBeTruthy();
-
-      entityAttributes = {
-        email: 'tommartin@tester.com',
-      };
-      result = property.getCurrentValue(entityId, entityAttributes);
-      expect(result.value).toBe(81);
-
-      entityAttributes = {
-        email: 'laila@company.test',
-      };
-      result = property.getCurrentValue(entityId, entityAttributes);
-      expect(result.value).toBe(25);
-
-      done();
-    });
+    entityAttributes = {
+      email: 'laila@company.test',
+    };
+    result = property.getCurrentValue(entityId, entityAttributes);
+    expect(result.value).toBe(25);
   });
 });

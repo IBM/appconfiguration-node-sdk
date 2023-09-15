@@ -28,7 +28,6 @@ async function setup() {
     bootstrapFile: filePath,
     liveConfigUpdateEnabled: false,
   });
-  await new Promise((resolve) => setTimeout(resolve, 4000));
 }
 
 beforeAll(() => {
@@ -85,16 +84,16 @@ describe('configuration handler', () => {
     expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', {}).isEnabled).toBe(false);
     expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com', band_level: '7' }).value).toBe(25);
     expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com', band_level: '7' }).isEnabled).toBe(true);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com',  band_level: '6' }).value).toBe(0);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com',  band_level: '6' }).isEnabled).toBe(false);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com', band_level: '6' }).value).toBe(0);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id1', { email: 'alice@ibm.com', band_level: '6' }).isEnabled).toBe(false);
     expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', {}).value).toBe(5);
     expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', {}).isEnabled).toBe(true);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'alice@ibm.com',  band_level: '7' }).value).toBe(25);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'alice@ibm.com',  band_level: '7' }).isEnabled).toBe(true);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'bob@ibm.com',  band_level: '7' }).value).toBe(5);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'bob@ibm.com',  band_level: '7' }).isEnabled).toBe(true);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id6', { email: 'bob@ibm.com',  band_level: '7' }).value).toBe(0);
-    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id6', { email: 'bob@ibm.com',  band_level: '7' }).isEnabled).toBe(false);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'alice@ibm.com', band_level: '7' }).value).toBe(25);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'alice@ibm.com', band_level: '7' }).isEnabled).toBe(true);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'bob@ibm.com', band_level: '7' }).value).toBe(5);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id2', { email: 'bob@ibm.com', band_level: '7' }).isEnabled).toBe(true);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id6', { email: 'bob@ibm.com', band_level: '7' }).value).toBe(0);
+    expect(configurationHandlerInstance.featureEvaluation(featureObj, 'id6', { email: 'bob@ibm.com', band_level: '7' }).isEnabled).toBe(false);
     expect(featureObj.isEnabled()).toBe(true);
     const result = featureObj.getCurrentValue('id1', { email: 'alice@ibm.com', band_level: '7' });
     expect(result.value).toBe(25);

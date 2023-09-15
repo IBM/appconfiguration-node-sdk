@@ -84,15 +84,21 @@ describe('file manager', () => {
     const filePath = path.join(__dirname, 'nonexistingfile.json');
     expect(FileManager.deleteFileData(filePath)).toBeUndefined();
   });
-  test('read config file', () => {
+  test('read config file - persistent cache', () => {
     const filePath = path.join(__dirname, 'nonexistingfile.json');
-    expect(FileManager.getFileData(filePath)).toStrictEqual({});
+    expect(FileManager.readPersistentCacheConfigurations(filePath)).toStrictEqual({});
   });
-  test('write & read config file', () => {
+  test('read config file - bootstrap configurations', () => {
+    const filePath = path.join(__dirname, 'nonexistingfile.json');
+    expect(() => { FileManager.readBootstrapConfigurations(filePath) }).toThrow(Error);
+  });
+  test('read config file - bootstrap configurations', () => {
+    const filePath = path.join(__dirname, 'appconfiguration.json');
+    expect(() => { FileManager.readBootstrapConfigurations(filePath) }).toThrow(Error);
+  });
+  test('write configurations to a file', () => {
     jest.setTimeout(30000);
     const filePath = path.join(__dirname, 'appconfiguration.json');
-    FileManager.storeFiles(data, filePath, () => {
-      expect(FileManager.getFileData(filePath)).toBe(data);
-    });
+    expect(() => { FileManager.storeFiles(data, filePath, () => { }) }).toThrow();
   });
 });
