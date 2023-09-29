@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-const { getNormalizedValue } = require('../../../../lib/configurations/internal/Utils');
+const { getNormalizedValue, extractConfigurationsFromBootstrapJson,
+    extractConfigurationsFromAPIResponse } = require('../../../../lib/configurations/internal/Utils');
 
 describe('utils', () => {
     test('test getNormalisedValue', () => {
@@ -24,4 +25,54 @@ describe('utils', () => {
         expect(getNormalizedValue('entityId:featureId')).toEqual(41);
 
     });
+    test('test invalid bootstrap json', () => {
+        let importJson = {
+            environments: [],
+            collections: [],
+            segments: []
+        }
+        expect(() => { extractConfigurationsFromBootstrapJson(importJson, "collection", "env") }).toThrow(Error);
+        importJson = {
+            environments: [
+                {
+                    "name": "Dev",
+                    "environment_id": "dev",
+                    "description": "Development environment",
+                    "tags": "",
+                    "color_code": "#FDD13A",
+                    "features": [],
+                    "properties": []
+                }
+            ],
+            collections: [
+                {
+                    "name": "My Collection",
+                    "collection_id": "mycollection",
+                    "description": "",
+                    "tags": ""
+                }
+            ],
+            segments: []
+        }
+        expect(() => { extractConfigurationsFromBootstrapJson(importJson, "collection", "dev") }).toThrow(Error);
+        expect(extractConfigurationsFromBootstrapJson(importJson, "mycollection", "dev").features.length).toEqual(0);
+        expect(extractConfigurationsFromBootstrapJson(importJson, "mycollection", "dev").properties.length).toEqual(0);
+        expect(extractConfigurationsFromBootstrapJson(importJson, "mycollection", "dev").segments.length).toEqual(0);
+    });
+    test('test extractConfigurationsFromAPIResponse', () => {
+        const sdkConfig = {
+            "environments": [
+                {
+                    "name": "Dev",
+                    "environment_id": "dev",
+                    "features": [],
+                    "properties": []
+                }
+            ],
+            "segments": []
+        }
+        expect(extractConfigurationsFromAPIResponse(sdkConfig).features.length).toEqual(0);
+        expect(extractConfigurationsFromAPIResponse(sdkConfig).properties.length).toEqual(0);
+        expect(extractConfigurationsFromAPIResponse(sdkConfig).segments.length).toEqual(0);
+    })
 });

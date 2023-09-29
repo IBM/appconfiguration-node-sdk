@@ -1,152 +1,304 @@
 {
-  "features": [
+  "environments": [
     {
-      "name": "Prime cars",
-      "feature_id": "prime-cars",
-      "type": "BOOLEAN",
-      "enabled_value": false,
-      "disabled_value": false,
-      "segment_rules": [
-        {
-          "rules": [
-            {
-              "segments": [
-                "kp3ydh3k"
-              ]
-            }
-          ],
-          "value": true,
-          "order": 1,
-          "rollout_percentage": 100
-        }
-      ],
-      "enabled": true,
-      "rollout_percentage": 100
-    },
-    {
-      "name": "Weekend discount",
-      "feature_id": "weekend-discount",
-      "type": "NUMERIC",
-      "enabled_value": 5,
-      "disabled_value": 0,
-      "segment_rules": [
-        {
-          "rules": [
-            {
-              "segments": [
-                "kp3yb6t1"
-              ]
-            }
-          ],
-          "value": 25,
-          "order": 1,
-          "rollout_percentage": 90
-        }
-      ],
-      "enabled": true,
-      "rollout_percentage": 50
-    }
-  ],
-  "properties": [
-    {
-      "name": "Age",
-      "property_id": "age",
+      "name": "Test environment",
+      "environment_id": "test-environment",
+      "description": "My test environment",
       "tags": "",
-      "type": "NUMERIC",
-      "value": 18,
-      "segment_rules": [
+      "color_code": "#FDD13A",
+      "features": [
         {
-          "rules": [
+          "name": "Prime cars",
+          "feature_id": "prime-cars",
+          "description": "",
+          "tags": "",
+          "type": "BOOLEAN",
+          "enabled_value": false,
+          "disabled_value": false,
+          "segment_rules": [
             {
-              "segments": [
-                "kp3ydh3k"
-              ]
+              "rules": [
+                {
+                  "segments": [
+                    "kp3ydh3k"
+                  ]
+                }
+              ],
+              "value": true,
+              "order": 1,
+              "rollout_percentage": 100
             }
           ],
-          "value": 21,
-          "order": 1
+          "collections": [
+            {
+              "collection_id": "test-collection",
+              "name": "Test collection"
+            }
+          ],
+          "enabled": true,
+          "rollout_percentage": 100,
+          "isOverridden": true
+        },
+        {
+          "name": "Weekend discount",
+          "feature_id": "weekend-discount",
+          "description": "",
+          "tags": "",
+          "type": "NUMERIC",
+          "enabled_value": 5,
+          "disabled_value": 0,
+          "segment_rules": [
+            {
+              "rules": [
+                {
+                  "segments": [
+                    "kp3yb6t1"
+                  ]
+                }
+              ],
+              "value": 25,
+              "order": 1,
+              "rollout_percentage": 90
+            }
+          ],
+          "collections": [
+            {
+              "collection_id": "test-collection",
+              "name": "Test collection"
+            },
+            {
+              "collection_id": "my-collection",
+              "name": "My collection"
+            }
+          ],
+          "enabled": true,
+          "rollout_percentage": 50,
+          "isOverridden": true
         }
       ],
-      "created_time": "2021-05-25T11:21:00Z",
-      "updated_time": "2021-05-25T11:27:38Z"
-    },
-    {
-      "name": "Campaign name",
-      "property_id": "campaign-name",
-      "tags": "",
-      "type": "STRING",
-      "value": "New year celebrations",
-      "segment_rules": [],
-      "created_time": "2021-05-25T11:20:04Z",
-      "updated_time": "2021-05-25T11:20:04Z"
-    }
-  ],
-  "segments": [
-    {
-      "name": "Beta users",
-      "segment_id": "kp3ydh3k",
-      "rules": [
+      "properties": [
         {
-          "values": [
-            "true"
+          "name": "Age",
+          "property_id": "age",
+          "description": "",
+          "tags": "",
+          "type": "NUMERIC",
+          "value": 18,
+          "segment_rules": [
+            {
+              "rules": [
+                {
+                  "segments": [
+                    "kp3ydh3k"
+                  ]
+                }
+              ],
+              "value": 21,
+              "order": 1
+            }
           ],
-          "operator": "is",
-          "attribute_name": "paid"
+          "collections": [
+            {
+              "collection_id": "test-collection",
+              "name": "Test collection"
+            },
+            {
+              "collection_id": "my-collection",
+              "name": "My collection"
+            }
+          ],
+          "isOverridden": true
+        },
+        {
+          "name": "Campaign name",
+          "property_id": "campaign-name",
+          "description": "",
+          "tags": "",
+          "type": "STRING",
+          "format": "TEXT",
+          "value": "New year celebrations",
+          "segment_rules": [],
+          "collections": [
+            {
+              "collection_id": "test-collection",
+              "name": "Test collection"
+            }
+          ],
+          "isOverridden": true
         }
       ]
     },
     {
+      "name": "Staging",
+      "environment_id": "staging",
+      "description": "Testing environment. Also called as pre-prod",
+      "tags": "",
+      "color_code": "#e0929b",
+      "features": [
+        {
+          "name": "Prime cars",
+          "feature_id": "prime-cars",
+          "description": "",
+          "type": "BOOLEAN",
+          "enabled_value": false,
+          "disabled_value": false,
+          "segment_rules": [],
+          "collections": [
+            {
+              "collection_id": "test-collection",
+              "name": "Test collection"
+            }
+          ],
+          "enabled": false,
+          "rollout_percentage": 100,
+          "isOverridden": false
+        },
+        {
+          "name": "Weekend discount",
+          "feature_id": "weekend-discount",
+          "description": "",
+          "type": "NUMERIC",
+          "enabled_value": 0,
+          "disabled_value": 0,
+          "segment_rules": [],
+          "collections": [
+            {
+              "collection_id": "test-collection",
+              "name": "Test collection"
+            },
+            {
+              "collection_id": "my-collection",
+              "name": "My collection"
+            }
+          ],
+          "enabled": false,
+          "rollout_percentage": 100,
+          "isOverridden": false
+        }
+      ],
+      "properties": [
+        {
+          "name": "Age",
+          "property_id": "age",
+          "description": "",
+          "type": "NUMERIC",
+          "value": 0,
+          "segment_rules": [],
+          "collections": [
+            {
+              "collection_id": "test-collection",
+              "name": "Test collection"
+            },
+            {
+              "collection_id": "my-collection",
+              "name": "My collection"
+            }
+          ],
+          "isOverridden": false
+        },
+        {
+          "name": "Campaign name",
+          "property_id": "campaign-name",
+          "description": "",
+          "type": "STRING",
+          "format": "TEXT",
+          "value": "",
+          "segment_rules": [],
+          "collections": [
+            {
+              "collection_id": "test-collection",
+              "name": "Test collection"
+            }
+          ],
+          "isOverridden": false
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "name": "My collection",
+      "collection_id": "my-collection",
+      "description": "",
+      "tags": ""
+    },
+    {
+      "name": "Test collection",
+      "collection_id": "test-collection",
+      "description": "",
+      "tags": ""
+    }
+  ],
+  "segments": [
+    {
       "name": "An IBM employee",
       "segment_id": "kp3yb6t1",
+      "description": "",
+      "tags": "",
       "rules": [
         {
+          "attribute_name": "email",
+          "operator": "startsWith",
           "values": [
             "alice"
-          ],
-          "operator": "startsWith",
-          "attribute_name": "email"
+          ]
         },
         {
-          "values": [
-            "ibm.com"
-          ],
+          "attribute_name": "email",
           "operator": "endsWith",
-          "attribute_name": "email"
+          "values": [
+            "@ibm.com"
+          ]
         },
         {
+          "attribute_name": "email",
+          "operator": "contains",
           "values": [
             "@"
-          ],
-          "operator": "contains",
-          "attribute_name": "email"
+          ]
         },
         {
+          "attribute_name": "band_level",
+          "operator": "greaterThan",
           "values": [
             "6"
-          ],
-          "operator": "greaterThan",
-          "attribute_name": "band_level"
+          ]
         },
         {
-          "values": [
-            "7"
-          ],
+          "attribute_name": "band_level",
           "operator": "greaterThanEquals",
-          "attribute_name": "band_level"
-        },
-        {
           "values": [
             "7"
-          ],
-          "operator": "lesserThanEquals",
-          "attribute_name": "band_level"
+          ]
         },
         {
+          "attribute_name": "band_level",
+          "operator": "lesserThanEquals",
+          "values": [
+            "7"
+          ]
+        },
+        {
+          "attribute_name": "band_level",
+          "operator": "lesserThan",
           "values": [
             "8"
-          ],
-          "operator": "lesserThan",
-          "attribute_name": "band_level"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Beta users",
+      "segment_id": "kp3ydh3k",
+      "description": "",
+      "tags": "",
+      "rules": [
+        {
+          "attribute_name": "paid",
+          "operator": "is",
+          "values": [
+            "true"
+          ]
         }
       ]
     }
