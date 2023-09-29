@@ -142,7 +142,7 @@ await appConfigClient.setContext(collectionId, environmentId, {
 ```
 This usecase will throw error if given `bootstrapFile` is not found or if unable to parse the json coming from the bootstrap file.
 
-* bootstrapFile: Absolute path of the JSON file, which contains configuration details. Make sure to provide a proper JSON file. You can generate this file using `ibmcloud ac config` command of the IBM Cloud App Configuration CLI.
+* bootstrapFile: Absolute path of the JSON file, which contains configuration details. Make sure to provide a proper JSON file. You can generate this file using `ibmcloud ac export` command of the IBM Cloud App Configuration CLI.
 * liveConfigUpdateEnabled: Live configuration update from the server. Set this value to `false` if the new configuration values shouldn't be fetched from the server.
 
 ## Get single feature
