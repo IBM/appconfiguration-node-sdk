@@ -1,3 +1,7 @@
 [
-
+    {
+        "cve": "SNYK-JS-INFLIGHT-6095116",
+        "comment": "Dev dependency.",
+        "expiration": "2024-03-30T00:00:00+05:30"
+    }
 ]
