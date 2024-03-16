@@ -103,6 +103,7 @@ where,
       <ul> AppConfiguration.REGION_EU_GB for London </ul>
       <ul> AppConfiguration.REGION_AU_SYD for Sydney </ul>
       <ul> AppConfiguration.REGION_US_EAST for Washington DC </ul>
+      <ul> AppConfiguration.REGION_EU_DE for Frankfurt </ul>
     </details>
 - **guid** : Instance Id of the App Configuration service. Obtain it from the service credentials section of the App
   Configuration dashboard.
