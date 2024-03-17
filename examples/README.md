@@ -5,7 +5,7 @@
 ## Step 1: Create an instance of App Configuration service
 - Log in to your IBM Cloud account.
 - In the [IBM Cloud catalog](https://cloud.ibm.com/catalog#services), search **App Configuration** and select [App Configuration](https://cloud.ibm.com/catalog/services/app-configuration). The service configuration screen opens.
-- **Select a region** - Currently, Dallas (us-south), London (eu-gb), Sydney (au-syd) and Washington DC (us-east) regions are supported.
+- **Select a region** - Currently, Dallas (us-south), London (eu-gb), Sydney (au-syd), Washington DC (us-east) and Frankfurt (eu-de) regions are supported.
 - Select a pricing plan, resource group and configure your resource with a service name, or use the preset name.
 - Click **Create**. A new service instance is created and the App Configuration console displayed.
 
