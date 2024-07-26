@@ -1,7 +1,6 @@
 # IBM Cloud App Configuration Node server SDK
 
-IBM Cloud App Configuration SDK is used to perform feature flag and property evaluation based on the configuration on
-IBM Cloud App Configuration service.
+IBM Cloud App Configuration SDK is used to perform feature flag and property evaluation and track custom metrics for Experimentation based on the configuration on IBM Cloud App Configuration service.
 
 ## Table of Contents
 
@@ -20,8 +19,7 @@ environments.
 
 Instrument your applications with App Configuration Node SDK, and use the App Configuration dashboard, CLI or API to
 define feature flags or properties, organized into collections and targeted to segments. Toggle feature flag states in
-the cloud to activate or deactivate features in your application or environment, when required. You can also manage the
-properties for distributed applications centrally.
+the cloud to activate or deactivate features in your application or environment, when required. Run experiments and measure the effect of feature flags on end users by tracking custom metrics. You can also manage the properties for distributed applications centrally.
 
 ## Installation
 
@@ -202,6 +200,16 @@ console.log(result.details.errorType); // (only if applicable, else it is undefi
 ```
 - entityId: Id of the Entity. This will be a string identifier related to the Entity against which the feature is evaluated. For example, an entity might be an instance of an app that runs on a mobile device, a microservice that runs on the cloud, or a component of infrastructure that runs that microservice. For any entity to interact with App Configuration, it must provide a unique entity ID.
 - entityAttributes: A JSON object consisting of the attribute name and their values that defines the specified entity. This is an optional parameter if the feature flag is not configured with any targeting definition. If the targeting is configured, then entityAttributes should be provided for the rule evaluation. An attribute is a parameter that is used to define a segment. The SDK uses the attribute values to determine if the specified entity satisfies the targeting rules, and returns the appropriate feature flag value.
+
+## Send custom metrics
+
+Record custom metrics for experiments using the track function. Calling track will queue the metric event, which will be sent in batches to the App Configuration servers.
+
+```javascript
+appConfigClient.track(eventKey, entityId)
+```
+where
+- eventKey: The event key for the metric associated with the running experiment. The event key in your metric and the event key in your code must match exactly.
 
 ## Get single property
 
