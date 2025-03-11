@@ -13,3 +13,6 @@ coverage
 # IDE files
 .idea
 .vscode/
+
+# package-lock file in Examples
+examples/package-lock.json

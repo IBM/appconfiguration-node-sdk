@@ -50,7 +50,7 @@ Initialize the sdk to connect with your App Configuration service instance.
 const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
 const appConfigClient = AppConfiguration.getInstance();
 
-const region = AppConfiguration.REGION_US_SOUTH;
+const region = '<region>';
 const guid = '<guid>';
 const apikey = '<apikey>';
 const collectionId = 'airlines-webapp';
@@ -97,17 +97,8 @@ if (property !== null) {
 </details>
 
 where, 
-- **region** : Region name where the App Configuration service instance is created.
-    <details><summary>Example</summary>
-      <ul> AppConfiguration.REGION_US_SOUTH for Dallas </ul>
-      <ul> AppConfiguration.REGION_EU_GB for London </ul>
-      <ul> AppConfiguration.REGION_AU_SYD for Sydney </ul>
-      <ul> AppConfiguration.REGION_US_EAST for Washington DC </ul>
-      <ul> AppConfiguration.REGION_EU_DE for Frankfurt </ul>
-      <ul> AppConfiguration.REGION_CA_TOR for Toronto </ul>
-      <ul> AppConfiguration.REGION_JP_TOK for Tokyo </ul>
-      <ul> AppConfiguration.REGION_JP_OSA for Osaka </ul>
-    </details>
+- **region** : Region name where the App Configuration service instance is created. 
+See list of supported locations [here](https://cloud.ibm.com/catalog/services/app-configuration). Eg:- `us-south`, `au-syd` etc.
 - **guid** : Instance Id of the App Configuration service. Obtain it from the service credentials section of the App
   Configuration dashboard.
 - **apikey** : ApiKey of the App Configuration service. Obtain it from the service credentials section of the App
