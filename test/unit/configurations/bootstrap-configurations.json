@@ -245,6 +245,13 @@
         },
         {
           "attribute_name": "email",
+          "operator": "notStartsWith",
+          "values": [
+            "bob"
+          ]
+        },
+        {
+          "attribute_name": "email",
           "operator": "endsWith",
           "values": [
             "@ibm.com"
@@ -252,9 +259,37 @@
         },
         {
           "attribute_name": "email",
+          "operator": "notEndsWith",
+          "values": [
+            "@google.com"
+          ]
+        },
+        {
+          "attribute_name": "email",
           "operator": "contains",
           "values": [
             "@"
+          ]
+        },
+        {
+          "attribute_name": "email",
+          "operator": "notContains",
+          "values": [
+            "#"
+          ]
+        },
+        {
+          "attribute_name": "email",
+          "operator": "is",
+          "values": [
+            "alice@ibm.com"
+          ]
+        },
+        {
+          "attribute_name": "email",
+          "operator": "isNot",
+          "values": [
+            "bob@ibm.com"
           ]
         },
         {

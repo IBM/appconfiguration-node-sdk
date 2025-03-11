@@ -29,11 +29,32 @@ function setup() {
         attribute_name: 'email',
       },
       {
+        values: ['bob'],
+        operator: 'notStartsWith',
+        attribute_name: 'email',
+      },
+      {
         values: ['ibm.com'],
         operator: 'endsWith',
         attribute_name: 'email',
       },
+      {
+        values: ['google.com'],
+        operator: 'notEndsWith',
+        attribute_name: 'email',
+      },
       { values: ['@'], operator: 'contains', attribute_name: 'email' },
+      { values: ['#'], operator: 'notContains', attribute_name: 'email' },
+      {
+        values: ['alice@ibm.com'],
+        operator: 'is',
+        attribute_name: 'email',
+      },
+      {
+        values: ['bob@ibm.com'],
+        operator: 'isNot',
+        attribute_name: 'email',
+      },
       {
         values: ['6'],
         operator: 'greaterThan',
@@ -71,12 +92,36 @@ describe('segment evaluate rule', () => {
     expect(segmentObj.evaluateRule(entityAttributes)).toBe(true);
   });
 
+  test('should return false', () => {
+    const entityAttributes = {
+      email: 'alice#ibm.com',
+      band_level: 7,
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(false);
+  });
+
+  test('should return false', () => {
+    const entityAttributes = {
+      email: 'bob@ibm.com',
+      band_level: 7,
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(false);
+  });
+
   test('should return true', () => {
     const entityAttributes = {
       email: 'alice@ibm.com',
       band_level: '7',
     };
     expect(segmentObj.evaluateRule(entityAttributes)).toBe(true);
+  });
+
+  test('should return false', () => {
+    const entityAttributes = {
+      email: 'bob@ibm.com',
+      band_level: '7',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(false);
   });
 
   test('should return false', () => {
