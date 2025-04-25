@@ -1,6 +1,6 @@
 {
   "name": "ibm-appconfiguration-node-sdk",
-  "version": "0.7.9",
+  "version": "0.7.10",
   "description": "IBM Cloud App Configuration Node.js SDK",
   "main": "./lib/AppConfiguration.js",
   "scripts": {
