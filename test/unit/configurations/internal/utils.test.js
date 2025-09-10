@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-const { getNormalizedValue, extractConfigurationsFromBootstrapJson,
-    extractConfigurationsFromAPIResponse } = require('../../../../lib/configurations/internal/Utils');
+const { getNormalizedValue, extractConfigurations } = require('../../../../lib/configurations/internal/Utils');
 
 describe('utils', () => {
     test('test getNormalisedValue', () => {
@@ -31,7 +30,7 @@ describe('utils', () => {
             collections: [],
             segments: []
         }
-        expect(() => { extractConfigurationsFromBootstrapJson(importJson, "collection", "env") }).toThrow(Error);
+        expect(() => { extractConfigurations(importJson, "env", "collection") }).toThrow(Error);
         importJson = {
             environments: [
                 {
@@ -54,10 +53,10 @@ describe('utils', () => {
             ],
             segments: []
         }
-        expect(() => { extractConfigurationsFromBootstrapJson(importJson, "collection", "dev") }).toThrow(Error);
-        expect(extractConfigurationsFromBootstrapJson(importJson, "mycollection", "dev").features.length).toEqual(0);
-        expect(extractConfigurationsFromBootstrapJson(importJson, "mycollection", "dev").properties.length).toEqual(0);
-        expect(extractConfigurationsFromBootstrapJson(importJson, "mycollection", "dev").segments.length).toEqual(0);
+        expect(() => { extractConfigurations(importJson, "dev", "collection") }).toThrow(Error);
+        expect(extractConfigurations(importJson, "dev", "mycollection").features.length).toEqual(0);
+        expect(extractConfigurations(importJson, "dev", "mycollection").properties.length).toEqual(0);
+        expect(extractConfigurations(importJson, "dev", "mycollection").segments.length).toEqual(0);
     });
     test('test extractConfigurationsFromAPIResponse', () => {
         const sdkConfig = {
@@ -69,10 +68,16 @@ describe('utils', () => {
                     "properties": []
                 }
             ],
+            "collections": [
+                {
+                    "name": "Collection",
+                    "collection_id": "collection"
+                }
+            ],
             "segments": []
         }
-        expect(extractConfigurationsFromAPIResponse(sdkConfig).features.length).toEqual(0);
-        expect(extractConfigurationsFromAPIResponse(sdkConfig).properties.length).toEqual(0);
-        expect(extractConfigurationsFromAPIResponse(sdkConfig).segments.length).toEqual(0);
+        expect(extractConfigurations(sdkConfig, "dev", "collection").features.length).toEqual(0);
+        expect(extractConfigurations(sdkConfig, "dev", "collection").properties.length).toEqual(0);
+        expect(extractConfigurations(sdkConfig, "dev", "collection").segments.length).toEqual(0);
     })
 });
