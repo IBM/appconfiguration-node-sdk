@@ -75,7 +75,7 @@ describe('configuration handler', () => {
         { rules: [{ segments: ['kp3yb6t1'] }], value: 25, order: 1, rollout_percentage: 90 },
       ],
       enabled: true,
-      rollout_percentage: 50
+      rollout_percentage: 50,
     };
 
     const featureObj = configurationHandlerInstance.getFeature('weekend-discount');
@@ -116,189 +116,188 @@ describe('configuration handler', () => {
     const segment = configurationHandlerInstance.getSegment('kp3yb6t1');
     expect(segment.name).toBe('An IBM employee');
   });
+});
 
-  describe('loadConfigurationsToCache', () => {
-    test('load features to cache correctly', () => {
-      const feature1 = {
-        name: 'feature-1',
-        feature_id: 'feature-1',
-        type: 'BOOLEAN',
-        disabled_value: false,
-        enabled_value: true,
-        enabled: false,
-        rollout_percentage: 100,
-        segment_rules: [],
-      };
+describe('loadConfigurationsToCache', () => {
+  test('load features to cache correctly', () => {
+    const feature1 = {
+      name: 'feature-1',
+      feature_id: 'feature-1',
+      type: 'BOOLEAN',
+      disabled_value: false,
+      enabled_value: true,
+      enabled: false,
+      rollout_percentage: 100,
+      segment_rules: [],
+    };
 
-      const data = {
-        features: [feature1]
-      };
+    const data = {
+      features: [feature1],
+    };
 
-      configurationHandlerInstance.loadConfigurationsToCache(data);
-      const feature = configurationHandlerInstance.getFeature(feature1.feature_id);
-  
-      expect(feature).toEqual(expect.objectContaining(feature1));
-    });
+    configurationHandlerInstance.loadConfigurationsToCache(data);
+    const feature = configurationHandlerInstance.getFeature(feature1.feature_id);
 
-    test('load properties to cache correctly', () => {
-      const property1 = {
-          name: 'property-1',
-          property_id: 'property-1',
-          type: 'STRING',
-          value: 'value-1',
-          segment_rules: [],
-      };
-      const data = {
-        properties: [property1]
-      };
-
-      configurationHandlerInstance.loadConfigurationsToCache(data);
-      const property = configurationHandlerInstance.getProperty(property1.property_id);
-  
-      expect(property).toEqual(expect.objectContaining(property1));
-    });
-
-    test('load segments to cache correctly', () => {
-      const segment1 = {
-        name: 'segment-1',
-        segment_id: 'segment-1',
-        rules: [],
-      }
-      const data = {
-        segments: [segment1]
-      };
-
-      configurationHandlerInstance.loadConfigurationsToCache(data);
-      const segment = configurationHandlerInstance.getSegment(segment1.segment_id);
-  
-      expect(segment).toEqual(expect.objectContaining(segment1));
-    });
-
-    test('remove deleted feature from cache', () => {
-      const feature1 = {
-        name: 'feature-1',
-        feature_id: 'feature-1',
-        type: 'BOOLEAN',
-        disabled_value: false,
-        enabled_value: true,
-        enabled: false,
-        rollout_percentage: 100,
-        segment_rules: [],
-      };
-
-      const feature2 = {
-        name: 'feature-2',
-        feature_id: 'feature-2',
-        type: 'BOOLEAN',
-        disabled_value: false,
-        enabled_value: true,
-        enabled: false,
-        rollout_percentage: 100,
-        segment_rules: [],
-      };
-
-      const data = {
-        features: [feature1, feature2]
-      };
-
-      const dataUpdated = {
-        features: [feature2]
-      };
-
-      configurationHandlerInstance.loadConfigurationsToCache(data);
-      configurationHandlerInstance.loadConfigurationsToCache(dataUpdated);
-      const featureObj1 = configurationHandlerInstance.getFeature(feature1.feature_id);
-      const featureObj2 = configurationHandlerInstance.getFeature(feature2.feature_id);
-  
-      expect(featureObj1).toBe(null);
-      expect(featureObj2).toEqual(expect.objectContaining(feature2));
-    });
-
-    test('remove deleted feature from cache (edge case)', () => {
-      const feature1 = {
-        name: 'feature-1',
-        feature_id: 'feature-1',
-        type: 'BOOLEAN',
-        disabled_value: false,
-        enabled_value: true,
-        enabled: false,
-        rollout_percentage: 100,
-        segment_rules: [],
-      };
-
-      const data = {
-        features: [feature1]
-      };
-
-      const dataUpdated = {
-        features: []
-      };
-
-      configurationHandlerInstance.loadConfigurationsToCache(data);
-      configurationHandlerInstance.loadConfigurationsToCache(dataUpdated);
-      const feature = configurationHandlerInstance.getFeature(feature1.feature_id);
-  
-      expect(feature).toBe(null);
-    });
-
-    test('remove deleted property from cache', () => {
-      const property1 = {
-        name: 'property-1',
-        property_id: 'property-1',
-        type: 'STRING',
-        value: 'hello world',
-        segment_rules: [],
-      };
-
-      const property2 = {
-        name: 'property-2',
-        property_id: 'property-2',
-        type: 'NUMERIC',
-        value: 42,
-        segment_rules: [],
-      };
-
-      const data = {
-        properties: [property1, property2]
-      };
-
-      const dataUpdated = {
-        properties: [property2]
-      };
-
-      configurationHandlerInstance.loadConfigurationsToCache(data);
-      configurationHandlerInstance.loadConfigurationsToCache(dataUpdated);
-
-      const propertyObj1 = configurationHandlerInstance.getProperty(property1.property_id);
-      const propertyObj2 = configurationHandlerInstance.getProperty(property2.property_id);
-
-      expect(propertyObj1).toBe(null);
-      expect(propertyObj2).toEqual(expect.objectContaining(property2));
-    });
-
-    test('remove deleted property from cache (edge case)', () => {
-      const property1 = {
-        name: 'property-1',
-        property_id: 'property-1',
-        type: 'STRING',
-        value: 'hello world',
-        segment_rules: [],
-      };
-
-      const data = {
-        properties: [property1]
-      };
-
-      const dataUpdated = {
-        properties: []
-      };
-
-      configurationHandlerInstance.loadConfigurationsToCache(data);
-      configurationHandlerInstance.loadConfigurationsToCache(dataUpdated);
-      const property = configurationHandlerInstance.getProperty(property1.property_id);
-
-      expect(property).toBe(null);
-    })
+    expect(feature).toEqual(expect.objectContaining(feature1));
   });
 
+  test('load properties to cache correctly', () => {
+    const property1 = {
+      name: 'property-1',
+      property_id: 'property-1',
+      type: 'STRING',
+      value: 'value-1',
+      segment_rules: [],
+    };
+    const data = {
+      properties: [property1],
+    };
+
+    configurationHandlerInstance.loadConfigurationsToCache(data);
+    const property = configurationHandlerInstance.getProperty(property1.property_id);
+
+    expect(property).toEqual(expect.objectContaining(property1));
+  });
+
+  test('load segments to cache correctly', () => {
+    const segment1 = {
+      name: 'segment-1',
+      segment_id: 'segment-1',
+      rules: [],
+    };
+    const data = {
+      segments: [segment1],
+    };
+
+    configurationHandlerInstance.loadConfigurationsToCache(data);
+    const segment = configurationHandlerInstance.getSegment(segment1.segment_id);
+
+    expect(segment).toEqual(expect.objectContaining(segment1));
+  });
+
+  test('remove deleted feature from cache', () => {
+    const feature1 = {
+      name: 'feature-1',
+      feature_id: 'feature-1',
+      type: 'BOOLEAN',
+      disabled_value: false,
+      enabled_value: true,
+      enabled: false,
+      rollout_percentage: 100,
+      segment_rules: [],
+    };
+
+    const feature2 = {
+      name: 'feature-2',
+      feature_id: 'feature-2',
+      type: 'BOOLEAN',
+      disabled_value: false,
+      enabled_value: true,
+      enabled: false,
+      rollout_percentage: 100,
+      segment_rules: [],
+    };
+
+    const data = {
+      features: [feature1, feature2],
+    };
+
+    const dataUpdated = {
+      features: [feature2],
+    };
+
+    configurationHandlerInstance.loadConfigurationsToCache(data);
+    configurationHandlerInstance.loadConfigurationsToCache(dataUpdated);
+    const featureObj1 = configurationHandlerInstance.getFeature(feature1.feature_id);
+    const featureObj2 = configurationHandlerInstance.getFeature(feature2.feature_id);
+
+    expect(featureObj1).toBe(null);
+    expect(featureObj2).toEqual(expect.objectContaining(feature2));
+  });
+
+  test('remove deleted feature from cache (edge case)', () => {
+    const feature1 = {
+      name: 'feature-1',
+      feature_id: 'feature-1',
+      type: 'BOOLEAN',
+      disabled_value: false,
+      enabled_value: true,
+      enabled: false,
+      rollout_percentage: 100,
+      segment_rules: [],
+    };
+
+    const data = {
+      features: [feature1],
+    };
+
+    const dataUpdated = {
+      features: [],
+    };
+
+    configurationHandlerInstance.loadConfigurationsToCache(data);
+    configurationHandlerInstance.loadConfigurationsToCache(dataUpdated);
+    const feature = configurationHandlerInstance.getFeature(feature1.feature_id);
+
+    expect(feature).toBe(null);
+  });
+
+  test('remove deleted property from cache', () => {
+    const property1 = {
+      name: 'property-1',
+      property_id: 'property-1',
+      type: 'STRING',
+      value: 'hello world',
+      segment_rules: [],
+    };
+
+    const property2 = {
+      name: 'property-2',
+      property_id: 'property-2',
+      type: 'NUMERIC',
+      value: 42,
+      segment_rules: [],
+    };
+
+    const data = {
+      properties: [property1, property2],
+    };
+
+    const dataUpdated = {
+      properties: [property2],
+    };
+
+    configurationHandlerInstance.loadConfigurationsToCache(data);
+    configurationHandlerInstance.loadConfigurationsToCache(dataUpdated);
+
+    const propertyObj1 = configurationHandlerInstance.getProperty(property1.property_id);
+    const propertyObj2 = configurationHandlerInstance.getProperty(property2.property_id);
+
+    expect(propertyObj1).toBe(null);
+    expect(propertyObj2).toEqual(expect.objectContaining(property2));
+  });
+
+  test('remove deleted property from cache (edge case)', () => {
+    const property1 = {
+      name: 'property-1',
+      property_id: 'property-1',
+      type: 'STRING',
+      value: 'hello world',
+      segment_rules: [],
+    };
+
+    const data = {
+      properties: [property1],
+    };
+
+    const dataUpdated = {
+      properties: [],
+    };
+
+    configurationHandlerInstance.loadConfigurationsToCache(data);
+    configurationHandlerInstance.loadConfigurationsToCache(dataUpdated);
+    const property = configurationHandlerInstance.getProperty(property1.property_id);
+
+    expect(property).toBe(null);
+  });
 });
