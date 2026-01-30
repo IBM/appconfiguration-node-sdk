@@ -33,7 +33,7 @@ npm install ibm-appconfiguration-node-sdk@latest
 
 ## Import the SDK
 
-To import the module
+To import the module,
 
 ```JS
 const { AppConfiguration } = require('ibm-appconfiguration-node-sdk');
