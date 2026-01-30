@@ -19,7 +19,7 @@
     "chalk": "^4.1.0",
     "dns-socket": "^4.2.2",
     "events": "^3.2.0",
-    "ibm-cloud-sdk-core": "^5.4.3",
+    "ibm-cloud-sdk-core": "^5.4.5",
     "murmurhash": "^2.0.0",
     "path": "^0.12.7",
     "websocket": "^1.0.33"
