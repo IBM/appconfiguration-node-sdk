@@ -75,6 +75,7 @@ describe('configuration handler', () => {
         { rules: [{ segments: ['kp3yb6t1'] }], value: 25, order: 1, rollout_percentage: 90 },
       ],
       enabled: true,
+      rollout_type: 'MANUAL',
       rollout_percentage: 50,
     };
 
