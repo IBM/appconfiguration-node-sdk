@@ -179,4 +179,156 @@ describe('segment evaluate rule', () => {
     };
     expect(segmentObj.evaluateRule(entityAttributes)).toBe(false);
   });
+
+  test('operator test1 startsWith', () => {
+    const segment = {
+      name: 's1',
+      segment_id: 's1',
+      rules: [
+        {
+          values: ['alice.stone'],
+          operator: 'startsWith',
+          attribute_name: 'email',
+        },
+      ],
+    };
+    segmentObj = new Segment(segment);
+    const entityAttributes = {
+      email: 'alice.stone@org.com',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(true);
+  });
+
+  test('operator test2 notStartsWith', () => {
+    const segment = {
+      name: 's2',
+      segment_id: 's2',
+      rules: [
+        {
+          values: ['alice&stone'],
+          operator: 'notStartsWith',
+          attribute_name: 'email',
+        },
+      ],
+    };
+    segmentObj = new Segment(segment);
+    const entityAttributes = {
+      email: 'alice.stone@org.com',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(true);
+  });
+
+  test('operator test3 endsWith', () => {
+    const segment = {
+      name: 's3',
+      segment_id: 's3',
+      rules: [
+        {
+          values: ['org.com'],
+          operator: 'endsWith',
+          attribute_name: 'email',
+        },
+      ],
+    };
+    segmentObj = new Segment(segment);
+    const entityAttributes = {
+      email: 'alice.stone@org.com',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(true);
+  });
+
+  test('operator test4 notEndsWith', () => {
+    const segment = {
+      name: 'org',
+      segment_id: 'org',
+      rules: [
+        {
+          values: ['org&com'],
+          operator: 'notEndsWith',
+          attribute_name: 'email',
+        },
+      ],
+    };
+    segmentObj = new Segment(segment);
+    const entityAttributes = {
+      email: 'alice.stone@org.com',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(true);
+  });
+
+  test('regex test1 "." value should not be used like wildcard', () => {
+    const segment = {
+      name: 's1',
+      segment_id: 's1',
+      rules: [
+        {
+          values: ['alice.stone'],
+          operator: 'startsWith',
+          attribute_name: 'email',
+        },
+      ],
+    };
+    segmentObj = new Segment(segment);
+    const entityAttributes = {
+      email: 'aliceXstone@orgXcom',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(false);
+  });
+
+  test('regex test2 "." value should not be used like wildcard', () => {
+    const segment = {
+      name: 's2',
+      segment_id: 's2',
+      rules: [
+        {
+          values: ['alice.stone'],
+          operator: 'notStartsWith',
+          attribute_name: 'email',
+        },
+      ],
+    };
+    segmentObj = new Segment(segment);
+    const entityAttributes = {
+      email: 'aliceXstone@orgXcom',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(true);
+  });
+
+  test('regex test3 "." value should not be used like wildcard', () => {
+    const segment = {
+      name: 's3',
+      segment_id: 's3',
+      rules: [
+        {
+          values: ['org.com'],
+          operator: 'endsWith',
+          attribute_name: 'email',
+        },
+      ],
+    };
+    segmentObj = new Segment(segment);
+    const entityAttributes = {
+      email: 'alice*stone@orgXcom',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(false);
+  });
+
+  test('regex test4 "." value should not be used like wildcard', () => {
+    const segment = {
+      name: 'org',
+      segment_id: 'org',
+      rules: [
+        {
+          values: ['org.com'],
+          operator: 'notEndsWith',
+          attribute_name: 'email',
+        },
+      ],
+    };
+    segmentObj = new Segment(segment);
+    const entityAttributes = {
+      email: 'alice.stone@orgXcom',
+    };
+    expect(segmentObj.evaluateRule(entityAttributes)).toBe(true);
+  });
 });
