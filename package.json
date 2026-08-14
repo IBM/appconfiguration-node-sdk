@@ -1,6 +1,6 @@
 {
   "name": "ibm-appconfiguration-node-sdk",
-  "version": "0.7.17",
+  "version": "0.9.0",
   "description": "IBM Cloud App Configuration Node.js SDK",
   "main": "./lib/AppConfiguration.js",
   "scripts": {
@@ -46,6 +46,7 @@
     "silent": false
   },
   "overrides": {
-    "eslint": "^9.26.0"
+    "eslint": "^9.26.0",
+    "js-yaml": "^4.3.1"
   }
 }
